@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 418761244}
   - component: {fileID: 418761243}
   - component: {fileID: 418761242}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -422,11 +422,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1547899377642783118, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.5404341
+      value: -1.54
       objectReference: {fileID: 0}
     - target: {fileID: 1547899377642783118, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.58873606
+      value: 4.95
       objectReference: {fileID: 0}
     - target: {fileID: 1547899377642783118, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: m_LocalPosition.z
@@ -460,6 +460,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3043576844599107309, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
+      propertyPath: collisionMask.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 5732110329051119476, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: m_Name
       value: Player
@@ -481,7 +485,7 @@ GameObject:
   - component: {fileID: 1288398105}
   - component: {fileID: 1288398104}
   - component: {fileID: 1288398103}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
