@@ -11,6 +11,11 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
     [SerializeField] private float moveSpeed;
     [SerializeField] private float maxJumpHeight;
     [SerializeField] private float timeToJumpApex;
+    [SerializeField] private float dashDistance;
+    [SerializeField] private float dashSpeed;
+    [SerializeField] private float horizontalDashDuration;
+    [SerializeField] private float verticalDashDuration;
+    [SerializeField] private float diagonalDashDuration;
 
     Controller2D controller;
     private float jumpForce;
@@ -19,6 +24,7 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
     Vector3 velocity;
     Vector3 prevVelocity;
     [SerializeField] private bool canInput;
+    [SerializeField] private bool canDash;
 
 
     // Start is called before the first frame update
@@ -30,7 +36,13 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
 
         jumpForce = 2 * maxJumpHeight / timeToJumpApex;
 
+        horizontalDashDuration = dashDistance / dashSpeed;
+        verticalDashDuration = horizontalDashDuration / 2;
+        diagonalDashDuration = horizontalDashDuration * (float)0.75;
+
         canInput = true;
+
+        canDash = true;
     }
 
     // Input dependent variables should be checked here because Update is called more
@@ -43,6 +55,16 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
         }
 
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        
+        if (Input.GetKeyDown(KeyCode.X) && canInput && canDash)
+        {
+            canDash = canInput = false;
+
+            velocity = new Vector3(input.x, input.y, 0).normalized * dashSpeed;
+            StartCoroutine(Dash());
+            
+        }
+
         if (canInput)
         {
             velocity.x = input.x * moveSpeed;
@@ -57,10 +79,7 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
             velocity.y += gravity * Time.fixedDeltaTime;
         }
         Vector3 deltaPosition = (prevVelocity + velocity) * 0.5f * Time.fixedDeltaTime;
-        if (canInput)
-        {
-            controller.Move(deltaPosition);
-        }
+        controller.Move(deltaPosition);
 
         if (controller.collisions.below || controller.collisions.above)
         {
@@ -70,6 +89,26 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
         if (controller.collisions.left || controller.collisions.right)
         {
             velocity.x = 0;
+        }
+    }
+
+    IEnumerator Dash()
+    {
+        if (velocity.y == dashSpeed || velocity.y == (-1 * dashSpeed))
+        {
+            yield return new WaitForSeconds(verticalDashDuration);
+            canDash = canInput = true;
+        }
+        else if (velocity.x == dashSpeed || velocity.x == (-1 * dashSpeed))
+        {
+            yield return new WaitForSeconds(horizontalDashDuration);
+            canDash = canInput = true;
+        }
+        else
+        {
+            yield return new WaitForSeconds(diagonalDashDuration);
+            canDash = canInput = true;
+
         }
     }
 }
