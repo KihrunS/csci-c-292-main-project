@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Timers;
 using UnityEngine;
 
 [RequireComponent(typeof(Controller2D))]
@@ -16,6 +18,7 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
 
     Vector3 velocity;
     Vector3 prevVelocity;
+    [SerializeField] private bool canInput;
 
 
     // Start is called before the first frame update
@@ -26,28 +29,38 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
         gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
 
         jumpForce = 2 * maxJumpHeight / timeToJumpApex;
+
+        canInput = true;
     }
 
     // Input dependent variables should be checked here because Update is called more
     // frequently than FixedUpdate
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C) && controller.collisions.below)
+        if (Input.GetKeyDown(KeyCode.C) && controller.collisions.below && canInput)
         {
             velocity.y = jumpForce;
         }
 
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        velocity.x = input.x * moveSpeed;
+        if (canInput)
+        {
+            velocity.x = input.x * moveSpeed;
+        }
     }
 
     void FixedUpdate()
     {
         prevVelocity = velocity;
-
-        velocity.y += gravity * Time.fixedDeltaTime;
+        if (canInput)
+        {
+            velocity.y += gravity * Time.fixedDeltaTime;
+        }
         Vector3 deltaPosition = (prevVelocity + velocity) * 0.5f * Time.fixedDeltaTime;
-        controller.Move(deltaPosition);
+        if (canInput)
+        {
+            controller.Move(deltaPosition);
+        }
 
         if (controller.collisions.below || controller.collisions.above)
         {
