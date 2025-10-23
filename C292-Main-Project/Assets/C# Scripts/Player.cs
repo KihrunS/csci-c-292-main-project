@@ -61,8 +61,8 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
             canDash = canInput = false;
 
             velocity = new Vector3(input.x, input.y, 0).normalized * dashSpeed;
-            StartCoroutine(Dash());
-            
+            StartCoroutine(Dash()); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
+
         }
 
         if (canInput)
