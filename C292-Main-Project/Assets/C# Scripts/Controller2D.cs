@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
 
-public class Controller2D : MonoBehaviour
+public class Controller2D : MonoBehaviour // This class comes from a tutorial by Sebastian Lague: https://youtube.com/playlist?list=PLFt_AvWsXl0f0hqURlhyIoAabKPgRsqjz&si=9xCdazuqRZ3RPJ5o, specifically episodes 1, 2, and 3.
 {
 
     public LayerMask collisionMask;
