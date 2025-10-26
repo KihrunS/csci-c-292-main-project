@@ -16,12 +16,15 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private float horizontalDashDuration;
     [SerializeField] private float verticalDashDuration;
     [SerializeField] private float diagonalDashDuration;
+    [SerializeField] private float wallSlideSpeedMax;
+    [SerializeField] private Vector2 wallJumpClimb;
 
     Controller2D controller;
     GlobalData globalData;
     private float jumpForce;
     private float gravity;
     private int maxDashCount;
+    private bool wallSliding;
 
     private Vector3 velocity;
     private Vector3 prevVelocity;
@@ -31,7 +34,9 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private bool isDashing;
     private bool groundedDashJump;
     private bool gravityOn;
-    
+    [SerializeField] private bool isWallJumping;
+    private int wallDirX;
+
 
 
     // Start is called before the first frame update
@@ -55,18 +60,32 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         isDashing = false;
         groundedDashJump = false;
         gravityOn = true;
+        wallSliding = false;
     }
 
     // Input dependent variables should be checked here because Update is called more
     // frequently than FixedUpdate (reminder from willowaway)
     void Update()
     {
-        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && controller.collisions.below && canJump) // Jump logic from SL tutorial
-        {
-            velocity.y = jumpForce;
-        }
-
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")); // SL tutorial
+
+        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && canJump) // Jump logic from SL tutorial
+        {
+            if (wallSliding)
+            {
+                canMove = false;
+                isWallJumping = true;
+
+                velocity.x = -wallDirX * moveSpeed;
+                velocity.y = jumpForce;
+
+                StartCoroutine("WallJump");
+            }
+            if (controller.collisions.below)
+            {
+                velocity.y = jumpForce;
+            }
+        }
         
         if ((Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.V)) && dashCount > 0)
         {
@@ -75,6 +94,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             dashCount -= 1;
 
             velocity = new Vector3(input.x, input.y, 0).normalized * dashSpeed;
+
             StartCoroutine("Dash"); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
             // Learned more proper Coroutine syntax from https://discussions.unity.com/t/coroutine-keep-working-after-stopcoroutine-call/257280
         }
@@ -87,6 +107,19 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
     void FixedUpdate() // Comes from willowaway
     {
+        wallDirX = (controller.collisions.left) ? -1 : 1;
+        wallSliding = false;
+        if ((controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y != 0)
+        {
+            wallSliding = true;
+
+            if (velocity.y < -wallSlideSpeedMax)
+            {
+                velocity.y = -wallSlideSpeedMax;
+            }
+
+        }
+
         prevVelocity = velocity;
         if (gravityOn)
         {
@@ -116,6 +149,13 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
                 StopCoroutine("GroundedDash");
                 isDashing = groundedDashJump = false;
                 canMove = canJump = gravityOn = true;
+            }
+
+            if (isWallJumping)
+            {
+                StopCoroutine("WallJump");
+                isWallJumping = false;
+                canMove = true;
             }
         }
 
@@ -168,5 +208,12 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         canJump = gravityOn = groundedDashJump = true;
         yield return new WaitForSeconds(horizontalDashDuration/4);
         dashCount = maxDashCount;
+    }
+
+    IEnumerator WallJump()
+    {
+        yield return new WaitUntil(() => velocity.y <= 0);
+        canMove = true;
+        isWallJumping = false;
     }
 }
