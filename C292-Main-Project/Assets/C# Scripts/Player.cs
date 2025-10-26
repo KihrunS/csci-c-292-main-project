@@ -18,6 +18,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private float diagonalDashDuration;
 
     Controller2D controller;
+    GlobalData globalData;
     private float jumpForce;
     private float gravity;
     private int maxDashCount;
@@ -35,6 +36,8 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     {
         controller = GetComponent<Controller2D>();
 
+        globalData = FindObjectOfType<GlobalData>();
+
         gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
 
         jumpForce = 2 * maxJumpHeight / timeToJumpApex; // Gravity and jump force calculations come from SL tutorial
@@ -42,8 +45,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         horizontalDashDuration = dashDistance / dashSpeed;
         verticalDashDuration = horizontalDashDuration / 2;
         diagonalDashDuration = horizontalDashDuration * (float)0.75;
-
-        maxDashCount = 1;
+        maxDashCount = globalData.MaxDashCount;
         canInput = true;
         dashCount = maxDashCount;
         isDashing = false;
