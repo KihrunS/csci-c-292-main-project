@@ -25,9 +25,12 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
     private Vector3 velocity;
     private Vector3 prevVelocity;
-    [SerializeField] private bool canInput;
+    [SerializeField] private bool canMove;
+    [SerializeField] private bool canJump;
     [SerializeField] private int dashCount;
     [SerializeField] private bool isDashing;
+    private bool groundedDashJump;
+    private bool gravityOn;
     
 
 
@@ -46,16 +49,19 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         verticalDashDuration = horizontalDashDuration / 2;
         diagonalDashDuration = horizontalDashDuration * (float)0.75;
         maxDashCount = globalData.MaxDashCount;
-        canInput = true;
+        canMove = true;
+        canJump = true;
         dashCount = maxDashCount;
         isDashing = false;
+        groundedDashJump = false;
+        gravityOn = true;
     }
 
     // Input dependent variables should be checked here because Update is called more
     // frequently than FixedUpdate (reminder from willowaway)
     void Update()
     {
-        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && controller.collisions.below && canInput) // Jump logic from SL tutorial
+        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && controller.collisions.below && canJump) // Jump logic from SL tutorial
         {
             velocity.y = jumpForce;
         }
@@ -64,16 +70,16 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         
         if ((Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.V)) && dashCount > 0)
         {
-            StopCoroutine(Dash());
-            canInput = false;
+            StopCoroutine("Dash");
+            canJump = canMove = gravityOn = false;
             dashCount -= 1;
 
             velocity = new Vector3(input.x, input.y, 0).normalized * dashSpeed;
-            StartCoroutine(Dash()); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
-
+            StartCoroutine("Dash"); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
+            // Learned more proper Coroutine syntax from https://discussions.unity.com/t/coroutine-keep-working-after-stopcoroutine-call/257280
         }
 
-        if (canInput)
+        if (canMove)
         {
             velocity.x = input.x * moveSpeed; // SL tutorial
         }
@@ -82,7 +88,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     void FixedUpdate() // Comes from willowaway
     {
         prevVelocity = velocity;
-        if (canInput)
+        if (gravityOn)
         {
             velocity.y += gravity * Time.fixedDeltaTime;
         }
@@ -92,13 +98,12 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         if (controller.collisions.below || controller.collisions.above)
         {
             velocity.y = 0;
-            Debug.Log("Grounded!");
-            if (isDashing)
+            if (isDashing && !groundedDashJump)
             {
-                Debug.Log("Stopped!");
-                StopCoroutine(Dash());
-                isDashing = false;
-                canInput = true;
+                StopCoroutine("Dash");
+                StopCoroutine("GroundedDash");
+                isDashing = groundedDashJump = false;
+                canMove = canJump = gravityOn = true;
             }
         }
 
@@ -107,15 +112,19 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             velocity.x = 0;
             if (isDashing)
             {
-                StopCoroutine(Dash());
-                isDashing = false;
-                canInput = true;
+                StopCoroutine("Dash");
+                StopCoroutine("GroundedDash");
+                isDashing = groundedDashJump = false;
+                canMove = canJump = gravityOn = true;
             }
         }
 
-        if (dashCount <= 0)
+        if (dashCount <= 0 && !groundedDashJump)
         {
-            if (controller.collisions.below) { dashCount = maxDashCount; }
+            if (controller.collisions.below) 
+            { 
+                dashCount = maxDashCount;
+            }
         }
     }
 
@@ -126,18 +135,21 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         if (velocity.y == dashSpeed || velocity.y == (-1 * dashSpeed))
         {
             yield return new WaitForSeconds(verticalDashDuration);
-            canInput = true;
+            canMove = canJump = gravityOn = true;
         }
         else if (velocity.x == dashSpeed || velocity.x == (-1 * dashSpeed))
         {
+            if (controller.collisions.below) { StartCoroutine("GroundedDash");  }
+
             yield return new WaitForSeconds(horizontalDashDuration);
-            canInput = true;
+            canMove = canJump = gravityOn = true;
+            Debug.Log("Allowing movement");
         }
         else
         {
             yield return new WaitForSeconds(diagonalDashDuration);
             float tempXVelocity = velocity.x;
-            canInput = true;
+            canMove = canJump = gravityOn = true;
             while (velocity.y > 0.5)
             {
                 velocity.x = tempXVelocity;
@@ -146,6 +158,14 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
         }
 
-        isDashing = false;
+        isDashing = groundedDashJump = false;
+    }
+
+    IEnumerator GroundedDash()
+    {
+        yield return new WaitForSeconds(horizontalDashDuration/4);
+        canJump = gravityOn = groundedDashJump = true;
+        yield return new WaitForSeconds(horizontalDashDuration/4);
+        dashCount = maxDashCount;
     }
 }
