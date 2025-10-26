@@ -141,9 +141,10 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         {
             if (controller.collisions.below) { StartCoroutine("GroundedDash");  }
 
-            yield return new WaitForSeconds(horizontalDashDuration);
-            canMove = canJump = gravityOn = true;
-            Debug.Log("Allowing movement");
+            yield return new WaitForSeconds(horizontalDashDuration/2);
+            gravityOn = true;
+            yield return new WaitForSeconds(horizontalDashDuration/2);
+            canJump = canMove = true;
         }
         else
         {

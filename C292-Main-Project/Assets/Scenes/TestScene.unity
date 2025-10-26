@@ -594,6 +594,10 @@ PrefabInstance:
       propertyPath: maxJumpHeight
       value: 2.2
       objectReference: {fileID: 0}
+    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
+      propertyPath: accelerationTimeAirborne
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 1547899377642783118, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.8
