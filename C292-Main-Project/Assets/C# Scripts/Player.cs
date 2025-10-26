@@ -49,14 +49,14 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
     // frequently than FixedUpdate
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C) && controller.collisions.below && canInput)
+        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && controller.collisions.below && canInput)
         {
             velocity.y = jumpForce;
         }
 
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         
-        if (Input.GetKeyDown(KeyCode.X) && canInput && canDash)
+        if ((Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.V)) && canInput && canDash)
         {
             canDash = canInput = false;
 
@@ -107,7 +107,13 @@ public class Player : MonoBehaviour // This class comes from the same tutorial f
         else
         {
             yield return new WaitForSeconds(diagonalDashDuration);
+            float tempXVelocity = velocity.x;
             canDash = canInput = true;
+            while (velocity.y > 0.5)
+            {
+                velocity.x = tempXVelocity;
+                yield return null;
+            }
 
         }
     }
