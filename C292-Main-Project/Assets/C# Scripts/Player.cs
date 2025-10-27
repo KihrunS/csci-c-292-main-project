@@ -87,21 +87,6 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             StopCoroutine("JumpAttemptTimer");
             StartCoroutine("AttemptJump");
             StartCoroutine("JumpAttemptTimer");
-
-            /* if (wallSliding)
-            {
-                canMove = false;
-                isWallJumping = true;
-
-                velocity.x = -wallDirX * moveSpeed;
-                velocity.y = jumpForce;
-
-                StartCoroutine("WallJump");
-            }
-            if (controller.collisions.below)
-            {
-                velocity.y = jumpForce;
-            } */
         }
         
         if ((Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.V)) && dashCount > 0)
@@ -159,7 +144,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
         if (controller.collisions.below || controller.collisions.above)
         {
-            velocity.y = 0;
+                velocity.y = 0;
             if (isDashing && !groundedDashJump)
             {
                 StopCoroutine("Dash");
@@ -270,7 +255,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
     IEnumerator WallJump()
     {
-        yield return new WaitUntil(() => velocity.y <= 0);
+        yield return new WaitForSeconds(timeToJumpApex * (float)1.01);
         canMove = true;
         isWallJumping = false;
     }

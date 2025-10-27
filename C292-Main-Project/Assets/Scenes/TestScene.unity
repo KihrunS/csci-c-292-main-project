@@ -773,7 +773,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: jumpGraceTime
-      value: 0.15
+      value: 0.14
       objectReference: {fileID: 0}
     - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: maxJumpHeight
@@ -782,6 +782,10 @@ PrefabInstance:
     - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: wallStickTime
       value: 0.075
+      objectReference: {fileID: 0}
+    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
+      propertyPath: timeToJumpApex
+      value: 0.38
       objectReference: {fileID: 0}
     - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: wallJumpClimb.x
