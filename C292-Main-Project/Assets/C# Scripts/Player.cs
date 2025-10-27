@@ -18,6 +18,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private float diagonalDashDuration;
     [SerializeField] private float wallSlideSpeedMax;
     [SerializeField] private Vector2 wallJumpClimb;
+    [SerializeField] private float wallStickTime;
 
     Controller2D controller;
     GlobalData globalData;
@@ -36,6 +37,8 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     private bool gravityOn;
     [SerializeField] private bool isWallJumping;
     private int wallDirX;
+    private float timeToWallUnstick;
+    private Vector2 input;
 
 
 
@@ -67,7 +70,12 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     // frequently than FixedUpdate (reminder from willowaway)
     void Update()
     {
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")); // SL tutorial
+        input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")); // SL tutorial
+
+        if (canMove)
+        {
+            velocity.x = input.x * moveSpeed; // SL tutorial
+        }
 
         if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && canJump) // Jump logic from SL tutorial
         {
@@ -98,11 +106,6 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             StartCoroutine("Dash"); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
             // Learned more proper Coroutine syntax from https://discussions.unity.com/t/coroutine-keep-working-after-stopcoroutine-call/257280
         }
-
-        if (canMove)
-        {
-            velocity.x = input.x * moveSpeed; // SL tutorial
-        }
     }
 
     void FixedUpdate() // Comes from willowaway
@@ -118,6 +121,23 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
                 velocity.y = -wallSlideSpeedMax;
             }
 
+            if (timeToWallUnstick > 0 && !isWallJumping)
+            {
+                velocity.x = 0;
+
+                if (input.x != wallDirX && input.x != 0)
+                {
+                    timeToWallUnstick -= Time.fixedDeltaTime;
+                }
+                else
+                {
+                    timeToWallUnstick = wallStickTime;
+                }
+            }
+            else
+            {
+                timeToWallUnstick = wallStickTime;
+            }
         }
 
         prevVelocity = velocity;

@@ -595,6 +595,10 @@ PrefabInstance:
       value: 2.2
       objectReference: {fileID: 0}
     - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
+      propertyPath: wallStickTime
+      value: 0.075
+      objectReference: {fileID: 0}
+    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: wallJumpClimb.x
       value: 8.5
       objectReference: {fileID: 0}
