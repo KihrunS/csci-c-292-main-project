@@ -19,6 +19,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private float wallSlideSpeedMax;
     [SerializeField] private Vector2 wallJumpClimb;
     [SerializeField] private float wallStickTime;
+    [SerializeField] private float jumpGraceTime;
 
     Controller2D controller;
     GlobalData globalData;
@@ -38,6 +39,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private bool isWallJumping;
     private int wallDirX;
     private float timeToWallUnstick;
+    [SerializeField] private float timeToJumpAttemptEnd;
     private Vector2 input;
 
 
@@ -77,9 +79,16 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             velocity.x = input.x * moveSpeed; // SL tutorial
         }
 
-        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && canJump) // Jump logic from SL tutorial
+        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && canJump) // Jump logic from SL tutorial, grace period logic by me
         {
-            if (wallSliding)
+            timeToJumpAttemptEnd = jumpGraceTime;
+
+            StopCoroutine("AttemptJump");
+            StopCoroutine("JumpAttemptTimer");
+            StartCoroutine("AttemptJump");
+            StartCoroutine("JumpAttemptTimer");
+
+            /* if (wallSliding)
             {
                 canMove = false;
                 isWallJumping = true;
@@ -92,7 +101,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             if (controller.collisions.below)
             {
                 velocity.y = jumpForce;
-            }
+            } */
         }
         
         if ((Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.V)) && dashCount > 0)
@@ -188,6 +197,35 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         }
     }
 
+    IEnumerator AttemptJump()
+    {
+        yield return new WaitUntil(() => controller.collisions.below || wallSliding || timeToJumpAttemptEnd <= 0);
+        
+        if (controller.collisions.below)
+        {
+            velocity.y = jumpForce;
+        }
+        else if (wallSliding)
+        {
+            canMove = false;
+            isWallJumping = true;
+
+            velocity.x = -wallDirX * moveSpeed;
+            velocity.y = jumpForce;
+
+            StartCoroutine("WallJump");
+        }
+    }
+
+    IEnumerator JumpAttemptTimer()
+    {
+        while (timeToJumpAttemptEnd > 0)
+        {
+            timeToJumpAttemptEnd -= Time.deltaTime;
+            yield return null;
+        }
+    }
+
     IEnumerator Dash()
     {
         isDashing = true;
@@ -236,4 +274,6 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         canMove = true;
         isWallJumping = false;
     }
+
+
 }
