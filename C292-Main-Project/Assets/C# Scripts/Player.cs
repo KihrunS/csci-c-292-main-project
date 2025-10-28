@@ -102,7 +102,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         }
     }
 
-    void FixedUpdate() // Comes from willowaway
+    void FixedUpdate() // Comes from willowaway, walljump/slide logic comes from SL
     {
         wallDirX = (controller.collisions.left) ? -1 : 1;
         wallSliding = false;
@@ -110,12 +110,12 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         {
             wallSliding = true;
 
-            if (velocity.y < -wallSlideSpeedMax)
+            if (velocity.y < -wallSlideSpeedMax && input.x == wallDirX)
             {
                 velocity.y = -wallSlideSpeedMax;
             }
 
-            if (timeToWallUnstick > 0 && !isWallJumping)
+            if (timeToWallUnstick > 0 && !isWallJumping && !isDashing)
             {
                 velocity.x = 0;
 
@@ -157,7 +157,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         if (controller.collisions.left || controller.collisions.right)
         {
             velocity.x = 0;
-            if (isDashing)
+            if (isDashing && !(velocity.y == dashSpeed || velocity.y == (-1 * dashSpeed)))
             {
                 StopCoroutine("Dash");
                 StopCoroutine("GroundedDash");
