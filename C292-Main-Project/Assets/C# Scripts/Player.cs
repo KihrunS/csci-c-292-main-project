@@ -20,6 +20,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private Vector2 wallJumpClimb;
     [SerializeField] private float wallStickTime;
     [SerializeField] private float jumpGraceTime;
+    [SerializeField] private float coyoteTime;
 
     Controller2D controller;
     GlobalData globalData;
@@ -41,6 +42,9 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     private float timeToWallUnstick;
     [SerializeField] private float timeToJumpAttemptEnd;
     private Vector2 input;
+    [SerializeField] private bool coyoteJump;
+    [SerializeField] private float timeToCoyoteEnd;
+    [SerializeField] private bool isGrounded;
 
 
 
@@ -66,6 +70,9 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         groundedDashJump = false;
         gravityOn = true;
         wallSliding = false;
+        coyoteJump = false;
+        timeToCoyoteEnd = 0;
+        isGrounded = true;
     }
 
     // Input dependent variables should be checked here because Update is called more
@@ -79,7 +86,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             velocity.x = input.x * moveSpeed; // SL tutorial
         }
 
-        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && canJump) // Jump logic from SL tutorial, grace period logic by me
+        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && canJump) // Jump logic from SL tutorial, grace period and coyote logic by me
         {
             timeToJumpAttemptEnd = jumpGraceTime;
 
@@ -157,6 +164,8 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         if (controller.collisions.left || controller.collisions.right)
         {
             velocity.x = 0;
+            coyoteJump = false;
+
             if (isDashing && !(velocity.y == dashSpeed || velocity.y == (-1 * dashSpeed)))
             {
                 StopCoroutine("Dash");
@@ -180,15 +189,43 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
                 dashCount = maxDashCount;
             }
         }
+
+        if (!controller.collisions.below)
+        {
+            if (isGrounded)
+            {
+                timeToCoyoteEnd = coyoteTime;
+                coyoteJump = true;
+            }
+
+            isGrounded = false;
+
+            if (timeToCoyoteEnd > 0)
+            {
+                timeToCoyoteEnd -= Time.fixedDeltaTime;
+            }
+            else
+            {
+                coyoteJump = false;
+            }
+        }
+        else
+        {
+            isGrounded = true;
+            coyoteJump = false;
+            timeToCoyoteEnd = 0;
+        }
     }
 
     IEnumerator AttemptJump()
     {
-        yield return new WaitUntil(() => controller.collisions.below || wallSliding || timeToJumpAttemptEnd <= 0);
+        yield return new WaitUntil(() => controller.collisions.below || wallSliding || coyoteJump || timeToJumpAttemptEnd <= 0);
         
-        if (controller.collisions.below)
+        if (controller.collisions.below || coyoteJump)
         {
             velocity.y = jumpForce;
+            coyoteJump = false;
+            isGrounded = false;
         }
         else if (wallSliding)
         {

@@ -16363,54 +16363,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: dashSpeed
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: jumpGraceTime
-      value: 0.14
-      objectReference: {fileID: 0}
-    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: maxJumpHeight
-      value: 2.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: wallStickTime
-      value: 0.075
-      objectReference: {fileID: 0}
-    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: timeToJumpApex
-      value: 0.38
-      objectReference: {fileID: 0}
-    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: wallJumpClimb.x
-      value: 8.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: wallJumpClimb.y
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: wallSlideSpeedMax
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 465269572557085560, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: accelerationTimeAirborne
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1547899377642783118, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1547899377642783118, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1547899377642783118, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.8
-      objectReference: {fileID: 0}
     - target: {fileID: 1547899377642783118, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.52
@@ -16450,10 +16402,6 @@ PrefabInstance:
     - target: {fileID: 1547899377642783118, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1547899377642783118, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5732110329051119476, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
       propertyPath: m_Name

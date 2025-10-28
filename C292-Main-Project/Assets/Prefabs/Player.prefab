@@ -31,8 +31,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 9.11523, y: -0.24500005, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -146,15 +146,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 6
-  maxJumpHeight: 2.1
-  timeToJumpApex: 0.4
+  maxJumpHeight: 2.2
+  timeToJumpApex: 0.38
   dashDistance: 4
-  diagonalDashDistance: 0
-  dashSpeed: 18
-  dashDuration: 0
+  dashSpeed: 9
+  horizontalDashDuration: 0
   verticalDashDuration: 0
-  canInput: 0
-  canDash: 0
+  diagonalDashDuration: 0
+  wallSlideSpeedMax: 3
+  wallJumpClimb: {x: 8.5, y: 7}
+  wallStickTime: 0.075
+  jumpGraceTime: 0.14
+  coyoteTime: 0.1
+  canMove: 0
+  canJump: 0
+  dashCount: 0
+  isDashing: 0
+  isWallJumping: 0
+  timeToJumpAttemptEnd: 0
+  coyoteJump: 0
+  timeToCoyoteEnd: 0
+  isGrounded: 0
 --- !u!114 &3043576844599107309
 MonoBehaviour:
   m_ObjectHideFlags: 0
