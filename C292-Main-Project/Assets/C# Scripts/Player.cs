@@ -247,7 +247,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         }
     }
 
-    private void Death()
+    public void Death()
     {
         Destroy(gameObject);
         gameManager.SpawnPlayer();
