@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Controller2D))]
 public class Player : MonoBehaviour // Many parts of this class comes from the same tutorial found in Controller2D.cs (denoted as SL tutorial from now on), but with updated calculation logic for the jump height by willowaway: https://github.com/whughes7/RaycastPlatformer/blob/03_Jump_Physics_Velocity_Verlet/Assets/Scripts/Player.cs
 {
 
+    // SerializeField variables
     [SerializeField] private float moveSpeed;
     [SerializeField] private float maxJumpHeight;
     [SerializeField] private float timeToJumpApex;
@@ -22,13 +24,16 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private float jumpGraceTime;
     [SerializeField] private float coyoteTime;
 
+    // Variables set/calculated on start only
     Controller2D controller;
-    GlobalData globalData;
+    SpriteRenderer sprite;
+    GameManager gameManager;
     private float jumpForce;
     private float gravity;
     private int maxDashCount;
     private bool wallSliding;
 
+    // Variables updated during gameplay
     private Vector3 velocity;
     private Vector3 prevVelocity;
     [SerializeField] private bool canMove;
@@ -46,6 +51,10 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private float timeToCoyoteEnd;
     [SerializeField] private bool isGrounded;
 
+    // Debug variables
+    [SerializeField] private float timer = 0;
+    [SerializeField] private bool timerStart; 
+
 
 
     // Start is called before the first frame update
@@ -53,7 +62,9 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     {
         controller = GetComponent<Controller2D>();
 
-        globalData = FindObjectOfType<GlobalData>();
+        sprite = GetComponentInChildren<SpriteRenderer>();
+
+        gameManager = FindObjectOfType<GameManager>();
 
         gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
 
@@ -62,7 +73,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         horizontalDashDuration = dashDistance / dashSpeed;
         verticalDashDuration = horizontalDashDuration / 2;
         diagonalDashDuration = horizontalDashDuration * (float)0.75;
-        maxDashCount = globalData.MaxDashCount;
+        maxDashCount = gameManager.MaxDashCount;
         canMove = true;
         canJump = true;
         dashCount = maxDashCount;
@@ -106,6 +117,25 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
             StartCoroutine("Dash"); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
             // Learned more proper Coroutine syntax from https://discussions.unity.com/t/coroutine-keep-working-after-stopcoroutine-call/257280
+        }
+
+        // debug
+        if (!timerStart && !controller.collisions.left && !controller.collisions.right)
+        {
+            timerStart = true;
+            StartCoroutine("DebugTimer");
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            StopCoroutine("DebugTimer");
+            timerStart = false;
+            timer = 0;
+        }
+        
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            Death();
         }
     }
 
@@ -217,6 +247,17 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         }
     }
 
+    private void Death()
+    {
+        Destroy(gameObject);
+        gameManager.SpawnPlayer();
+    }
+
+    private void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     IEnumerator AttemptJump()
     {
         yield return new WaitUntil(() => controller.collisions.below || wallSliding || coyoteJump || timeToJumpAttemptEnd <= 0);
@@ -297,5 +338,18 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         isWallJumping = false;
     }
 
+    /* debug
+    IEnumerator DebugTimer()
+    {
+        while (timerStart)
+        {
+            timer += Time.deltaTime;
+            if (controller.collisions.right)
+            {
+                timerStart = false;
+            }
+            yield return null;
+        }
 
+    } */
 }

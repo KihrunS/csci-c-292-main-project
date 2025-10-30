@@ -16,9 +16,15 @@ public class Controller2D : MonoBehaviour // This class comes from a tutorial by
     float horizontalRaySpacing;
     float verticalRaySpacing;
 
-    new BoxCollider2D collider;
+    new public BoxCollider2D collider;
     RaycastOrigins raycastOrigins;
     public CollisionInfo collisions;
+
+    // Debugging variables, by me
+    [SerializeField] private bool upCollision;
+    [SerializeField] private bool downCollision;
+    [SerializeField] private bool leftCollision;
+    [SerializeField] private bool rightCollision;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +32,14 @@ public class Controller2D : MonoBehaviour // This class comes from a tutorial by
         collider = GetComponent<BoxCollider2D>();
         CalculateRaySpacing();
         collisions.faceDir = 1;
+    }
+
+    void FixedUpdate() // for debugging, by me
+    {
+        upCollision = collisions.above;
+        downCollision = collisions.below;
+        leftCollision = collisions.left;
+        rightCollision = collisions.right;
     }
 
     public void Move(Vector3 velocity)
