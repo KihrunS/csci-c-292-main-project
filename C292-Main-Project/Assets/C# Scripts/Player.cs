@@ -171,7 +171,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
                 if (input.x != wallDirX && input.x != 0)
                 {
                     timeToWallUnstick -= Time.fixedDeltaTime;
-                    dirFacing = -wallDirX;
+                    dirFacing = -wallDirX; // Allows you to change directions without unsticking
                 }
                 else
                 {
@@ -194,10 +194,10 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         
         if (velocity.x != 0)
         {
-            dirFacing = (velocity.x > 0) ? 1 : -1;
+            dirFacing = (velocity.x > 0) ? 1 : -1; // Changes the direciton you're facing based on your velocity, but only if you're moving
         }
 
-        if (controller.collisions.below || controller.collisions.above)
+        if (controller.collisions.below)
         {
                 velocity.y = 0;
             if (isDashing && !groundedDashJump)
@@ -206,6 +206,14 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
                 StopCoroutine("GroundedDash");
                 isDashing = groundedDashJump = false;
                 canMove = canJump = gravityOn = true;
+            }
+        }
+
+        if (controller.collisions.above)
+        {
+            if (!isDashing)
+            {
+                velocity.y = 0;
             }
         }
 
@@ -327,7 +335,13 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         }
         else
         {
-            yield return new WaitForSeconds(diagonalDashDuration);
+            yield return new WaitForSeconds(diagonalDashDuration/2);
+            
+            if (!controller.collisions.above)
+            {
+                yield return new WaitForSeconds(diagonalDashDuration / 2);
+            }
+
             float tempXVelocity = velocity.x;
             canMove = canJump = gravityOn = true;
             while (velocity.y > 0.5)
