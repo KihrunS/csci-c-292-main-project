@@ -5,13 +5,19 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 
-public class Refresh : MonoBehaviour
+public class Spring : MonoBehaviour
 {
     GameManager gameManager;
     new BoxCollider2D collider;
     SpriteRenderer spriteRenderer;
 
-    [SerializeField] private float respawnTime;
+    [SerializeField] private float springTime;
+    [SerializeField] private float hangTime;
+    [SerializeField] private float cooldown;
+    [SerializeField] private Sprite up;
+    [SerializeField] private Sprite down;
+
+    private bool active = true;
 
     // Start is called before the first frame update
     void Start()
@@ -26,25 +32,24 @@ public class Refresh : MonoBehaviour
     {
         
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (gameManager.CanRefresh())
+            if (active)
             {
-                gameManager.DashRefresh();
-                collider.enabled = false;
-                spriteRenderer.enabled = false;
-                StartCoroutine("Respawn");
+                gameManager.SpringJump(springTime, hangTime);
+                active = false;
+                spriteRenderer.sprite = down;
+                StartCoroutine("Cooldown");
             }
         }
     }
 
-    IEnumerator Respawn()
+    IEnumerator Cooldown()
     {
-        yield return new WaitForSeconds(respawnTime);
-        collider.enabled = true;
-        spriteRenderer.enabled = true;
+        yield return new WaitForSeconds(cooldown);
+        active = true;
+        spriteRenderer.sprite = up;
     }
 }

@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt(dashKey, MaxDashCount + 1);
     }
 
-    public void SpawnPlayer()
+    private void SpawnPlayer()
     {
         Instantiate(playerPrefab, spawnPosition.transform.position, Quaternion.identity);
     }
@@ -71,16 +71,22 @@ public class GameManager : MonoBehaviour
 
     public void DashRefresh()
     {
-        playerScript.dashCount = MaxDashCount;
+        playerScript.SetDashCount(MaxDashCount);
     }
 
     public Boolean CanRefresh()
     {
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        if (playerScript.dashCount < MaxDashCount)
+        if (playerScript.GetDashCount() < MaxDashCount)
         {
             return true;
         }
         return false;
+    }
+
+    public void SpringJump(float springTime, float hangTime)
+    {
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        playerScript.SpringJumpTrigger(springTime, hangTime);
     }
 }

@@ -23,6 +23,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private float wallStickTime;
     [SerializeField] private float jumpGraceTime;
     [SerializeField] private float coyoteTime;
+    [SerializeField] private float fallSpeedMax;
 
     // Variables set/calculated on start only
     Controller2D controller;
@@ -37,7 +38,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     private Vector3 prevVelocity;
     [SerializeField] private bool canMove;
     [SerializeField] private bool canJump;
-    [SerializeField] public int dashCount;
+    [SerializeField] private int dashCount;
     [SerializeField] private bool isDashing;
     private bool groundedDashJump;
     private bool gravityOn;
@@ -51,6 +52,9 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private bool isGrounded;
     [SerializeField] private int dirFacing;
     [SerializeField] private bool wallSliding;
+
+    // Coroutine variable(s)
+    private Coroutine springJump;
 
     /* Debug variables
     [SerializeField] private float timer = 0;
@@ -113,6 +117,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         {
             StopCoroutine("Dash");
             StopCoroutine("WallJump"); // Allows you to interrupt walljump by dashing
+            StopCoroutine(springJump); // Allows you to interrupt spring by dashing
             canJump = canMove = gravityOn = isWallJumping = false;
             dashCount -= 1;
 
@@ -143,6 +148,12 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         if (Input.GetKeyDown(KeyCode.D))
         {
             gameManager.KillPlayer();
+        } 
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            StopCoroutine(springJump);
+            gravityOn = true;
         } */
     }
 
@@ -189,6 +200,12 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         {
             velocity.y += gravity * Time.fixedDeltaTime;
         }
+
+        if (!isDashing && velocity.y < -fallSpeedMax)
+        {
+            velocity.y = -fallSpeedMax;
+        }
+
         Vector3 deltaPosition = (prevVelocity + velocity) * 0.5f * Time.fixedDeltaTime;
         controller.Move(deltaPosition);
         
@@ -278,6 +295,16 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void SpringJumpTrigger(float springTime, float hangTime)
+    {
+        isGrounded = false;
+        dashCount = maxDashCount;
+        springJump = StartCoroutine(SpringJump(springTime, hangTime));
+
+    }
+
+    // Coroutines
+
     IEnumerator AttemptJump()
     {
         yield return new WaitUntil(() => controller.collisions.below || wallSliding || coyoteJump || timeToJumpAttemptEnd <= 0);
@@ -290,6 +317,8 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         }
         else if (wallSliding)
         {
+            StopCoroutine(springJump); // Allows you to interrupt the spring jump by walljumping
+            gravityOn = true;
             canMove = false;
             isWallJumping = true;
 
@@ -362,6 +391,27 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         yield return new WaitForSeconds(timeToJumpApex * 1.01f);
         canMove = true;
         isWallJumping = false;
+    }
+    IEnumerator SpringJump(float springTime, float hangTime)
+    {
+        gravityOn = false;
+        velocity.y = jumpForce;
+        yield return new WaitForSeconds(springTime);
+        velocity.y = 0;
+        yield return new WaitForSeconds(hangTime);
+        gravityOn = true;
+    }
+
+    // Access methods
+
+    public int GetDashCount()
+    {
+        return dashCount;
+    }
+
+    public void SetDashCount(int setDashCount)
+    {
+        dashCount = setDashCount;
     }
 
     /* debug

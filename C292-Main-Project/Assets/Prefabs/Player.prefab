@@ -268,6 +268,7 @@ MonoBehaviour:
   wallStickTime: 0.075
   jumpGraceTime: 0.14
   coyoteTime: 0.1
+  fallSpeedMax: 12
   canMove: 0
   canJump: 0
   dashCount: 0
@@ -277,8 +278,8 @@ MonoBehaviour:
   coyoteJump: 0
   timeToCoyoteEnd: 0
   isGrounded: 0
-  timer: 0
-  timerStart: 0
+  dirFacing: 0
+  wallSliding: 0
 --- !u!114 &3043576844599107309
 MonoBehaviour:
   m_ObjectHideFlags: 0
