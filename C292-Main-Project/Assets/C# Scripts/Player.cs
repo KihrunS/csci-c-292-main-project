@@ -37,7 +37,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     private Vector3 prevVelocity;
     [SerializeField] private bool canMove;
     [SerializeField] private bool canJump;
-    [SerializeField] private int dashCount;
+    [SerializeField] public int dashCount;
     [SerializeField] private bool isDashing;
     private bool groundedDashJump;
     private bool gravityOn;

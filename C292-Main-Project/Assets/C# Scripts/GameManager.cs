@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +17,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject playerPrefab;
     private GameObject spawnPosition;
-    private GameObject player;
+    private GameObject playerInstance;
+    private Player playerScript;
 
     private bool dead = false;
 
@@ -61,9 +63,24 @@ public class GameManager : MonoBehaviour
         if (!dead)
         {
             dead = true;
-            player = GameObject.FindGameObjectWithTag("Player");
-            Destroy(player);
+            playerInstance = GameObject.FindGameObjectWithTag("Player");
+            Destroy(playerInstance);
             StartCoroutine("Respawn");
         }
+    }
+
+    public void DashRefresh()
+    {
+        playerScript.dashCount = MaxDashCount;
+    }
+
+    public Boolean CanRefresh()
+    {
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        if (playerScript.dashCount < MaxDashCount)
+        {
+            return true;
+        }
+        return false;
     }
 }
