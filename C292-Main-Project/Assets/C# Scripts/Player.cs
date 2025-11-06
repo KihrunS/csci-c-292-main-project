@@ -31,7 +31,6 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     private float jumpForce;
     private float gravity;
     private int maxDashCount;
-    private bool wallSliding;
 
     // Variables updated during gameplay
     private Vector3 velocity;
@@ -50,6 +49,8 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private bool coyoteJump;
     [SerializeField] private float timeToCoyoteEnd;
     [SerializeField] private bool isGrounded;
+    [SerializeField] private int dirFacing;
+    [SerializeField] private bool wallSliding;
 
     // Debug variables
     [SerializeField] private float timer = 0;
@@ -84,6 +85,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         coyoteJump = false;
         timeToCoyoteEnd = 0;
         isGrounded = true;
+        dirFacing = 1;
     }
 
     // Input dependent variables should be checked here because Update is called more
@@ -97,7 +99,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             velocity.x = input.x * moveSpeed; // SL tutorial
         }
 
-        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && canJump) // Jump logic from SL tutorial, grace period and coyote logic by me
+        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Z)) && canJump) // Jump logic started from SL tutorial, eventually fully reworked by me
         {
             timeToJumpAttemptEnd = jumpGraceTime;
 
@@ -110,9 +112,14 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         if ((Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.V)) && dashCount > 0)
         {
             StopCoroutine("Dash");
-            canJump = canMove = gravityOn = false;
+            StopCoroutine("WallJump"); // Allows you to interrupt walljump by dashing
+            canJump = canMove = gravityOn = isWallJumping = false;
             dashCount -= 1;
 
+            if (input.x == 0 && input.y == 0) // This makes sure you dash in the direction you're facing if you don't input anything while pressing dash
+            {
+                input.x = dirFacing;
+            }
             velocity = new Vector3(input.x, input.y, 0).normalized * dashSpeed;
 
             StartCoroutine("Dash"); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
@@ -147,9 +154,14 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         {
             wallSliding = true;
 
-            if (velocity.y < -wallSlideSpeedMax && input.x == wallDirX)
+            if (input.x == wallDirX)
             {
-                velocity.y = -wallSlideSpeedMax;
+                dirFacing = wallDirX;
+                
+                if (velocity.y < -wallSlideSpeedMax)
+                {
+                    velocity.y = -wallSlideSpeedMax;
+                }
             }
 
             if (timeToWallUnstick > 0 && !isWallJumping && !isDashing)
@@ -159,6 +171,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
                 if (input.x != wallDirX && input.x != 0)
                 {
                     timeToWallUnstick -= Time.fixedDeltaTime;
+                    dirFacing = -wallDirX;
                 }
                 else
                 {
@@ -178,6 +191,11 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         }
         Vector3 deltaPosition = (prevVelocity + velocity) * 0.5f * Time.fixedDeltaTime;
         controller.Move(deltaPosition);
+        
+        if (velocity.x != 0)
+        {
+            dirFacing = (velocity.x > 0) ? 1 : -1;
+        }
 
         if (controller.collisions.below || controller.collisions.above)
         {
