@@ -26,8 +26,8 @@ public class Controller2D : MonoBehaviour // This class comes from a tutorial by
     [SerializeField] private bool leftCollision;
     [SerializeField] private bool rightCollision;
 
-    // Start is called before the first frame update
-    void Start()
+    // Changed to awake so it gets assigned earlier
+    private void Awake()
     {
         collider = GetComponent<BoxCollider2D>();
         CalculateRaySpacing();
