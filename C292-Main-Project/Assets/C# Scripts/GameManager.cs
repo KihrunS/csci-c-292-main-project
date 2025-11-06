@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private float respawnTime;
+    [SerializeField] public float respawnTime;
 
     string starKey = "StarCount";
     string dashKey = "MaxDashCount";
@@ -14,8 +14,11 @@ public class GameManager : MonoBehaviour
 
 
 
-    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject playerPrefab;
     private GameObject spawnPosition;
+    private GameObject player;
+
+    private bool dead = false;
 
     private void Awake()
     {
@@ -43,12 +46,24 @@ public class GameManager : MonoBehaviour
 
     public void SpawnPlayer()
     {
-        StartCoroutine("Respawn");
+        Instantiate(playerPrefab, spawnPosition.transform.position, Quaternion.identity);
     }
 
     private IEnumerator Respawn()
     {
         yield return new WaitForSeconds(respawnTime);
-        Instantiate(player, spawnPosition.transform.position, Quaternion.identity);
+        Instantiate(playerPrefab, spawnPosition.transform.position, Quaternion.identity);
+        dead = false;
+    }
+
+    public void KillPlayer()
+    {
+        if (!dead)
+        {
+            dead = true;
+            player = GameObject.FindGameObjectWithTag("Player");
+            Destroy(player);
+            StartCoroutine("Respawn");
+        }
     }
 }

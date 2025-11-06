@@ -52,9 +52,9 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private int dirFacing;
     [SerializeField] private bool wallSliding;
 
-    // Debug variables
+    /* Debug variables
     [SerializeField] private float timer = 0;
-    [SerializeField] private bool timerStart; 
+    [SerializeField] private bool timerStart; */
 
 
 
@@ -73,7 +73,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
         horizontalDashDuration = dashDistance / dashSpeed;
         verticalDashDuration = horizontalDashDuration / 2;
-        diagonalDashDuration = horizontalDashDuration * (float)0.75;
+        diagonalDashDuration = horizontalDashDuration * 0.75f;
         maxDashCount = gameManager.MaxDashCount;
         canMove = true;
         canJump = true;
@@ -126,7 +126,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             // Learned more proper Coroutine syntax from https://discussions.unity.com/t/coroutine-keep-working-after-stopcoroutine-call/257280
         }
 
-        // debug
+        /* debug
         if (!timerStart && !controller.collisions.left && !controller.collisions.right)
         {
             timerStart = true;
@@ -142,8 +142,8 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         
         if (Input.GetKeyDown(KeyCode.D))
         {
-            Death();
-        }
+            gameManager.KillPlayer();
+        } */
     }
 
     void FixedUpdate() // Comes from willowaway, walljump/slide logic comes from SL
@@ -273,12 +273,6 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         }
     }
 
-    public void Death()
-    {
-        Destroy(gameObject);
-        gameManager.SpawnPlayer();
-    }
-
     private void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -365,7 +359,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
     IEnumerator WallJump()
     {
-        yield return new WaitForSeconds(timeToJumpApex * (float)1.01);
+        yield return new WaitForSeconds(timeToJumpApex * 1.01f);
         canMove = true;
         isWallJumping = false;
     }

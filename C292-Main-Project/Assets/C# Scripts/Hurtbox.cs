@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class SpikeBehavior : MonoBehaviour
+public class Hurtbox : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
+    GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
@@ -23,8 +23,7 @@ public class SpikeBehavior : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("die");
-            // player.Death();
+            gameManager.KillPlayer();
         }
     }
 }
