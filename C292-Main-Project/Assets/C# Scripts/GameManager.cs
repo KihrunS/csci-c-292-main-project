@@ -89,10 +89,10 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
-    public void SpringJump(float springTime, float hangTime)
+    public void SpringJump()
     {
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        playerScript.SpringJumpTrigger(springTime, hangTime);
+        playerScript.SpringJump();
     }
 
     // debug

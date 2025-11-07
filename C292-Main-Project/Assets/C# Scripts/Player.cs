@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -29,7 +30,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     Controller2D controller;
     SpriteRenderer sprite;
     GameManager gameManager;
-    private float jumpForce;
+    [SerializeField] private float jumpForce;
     private float gravity;
     private int maxDashCount;
 
@@ -41,7 +42,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private int dashCount;
     [SerializeField] private bool isDashing;
     private bool groundedDashJump;
-    private bool gravityOn;
+    [SerializeField] private bool gravityOn;
     [SerializeField] private bool isWallJumping;
     private int wallDirX;
     private float timeToWallUnstick;
@@ -52,9 +53,6 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private bool isGrounded;
     [SerializeField] private int dirFacing;
     [SerializeField] private bool wallSliding;
-
-    // Coroutine variable(s)
-    private Coroutine springJump;
 
     /* Debug variables
     [SerializeField] private float timer = 0;
@@ -117,7 +115,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         {
             StopCoroutine("Dash");
             StopCoroutine("WallJump"); // Allows you to interrupt walljump by dashing
-            StopCoroutine(springJump); // Allows you to interrupt spring by dashing
+
             canJump = canMove = gravityOn = isWallJumping = false;
             dashCount -= 1;
 
@@ -295,12 +293,11 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void SpringJumpTrigger(float springTime, float hangTime)
+    public void SpringJump()
     {
         isGrounded = false;
         dashCount = maxDashCount;
-        springJump = StartCoroutine(SpringJump(springTime, hangTime));
-
+        velocity.y = 2 * 3.009f / 0.34f;
     }
 
     // Coroutines
@@ -317,7 +314,6 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         }
         else if (wallSliding)
         {
-            StopCoroutine(springJump); // Allows you to interrupt the spring jump by walljumping
             gravityOn = true;
             canMove = false;
             isWallJumping = true;
@@ -391,15 +387,6 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         yield return new WaitForSeconds(timeToJumpApex * 1.01f);
         canMove = true;
         isWallJumping = false;
-    }
-    IEnumerator SpringJump(float springTime, float hangTime)
-    {
-        gravityOn = false;
-        velocity.y = jumpForce;
-        yield return new WaitForSeconds(springTime);
-        velocity.y = 0;
-        yield return new WaitForSeconds(hangTime);
-        gravityOn = true;
     }
 
     // Access methods
