@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -24,8 +25,12 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        spawnPosition = GameObject.FindGameObjectWithTag("SpawnPosition");
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            PlayerPrefs.DeleteAll();
+        }
 
+        spawnPosition = GameObject.FindGameObjectWithTag("SpawnPosition");
         CurrentStarCount = PlayerPrefs.GetInt(starKey);
         MaxDashCount = PlayerPrefs.GetInt(dashKey) + 1;
         
@@ -36,9 +41,9 @@ public class GameManager : MonoBehaviour
         Invoke("SpawnPlayer", 0.1f);
     }
 
-    public void SetStarCount(int starCount)
+    public void IncrementStarCount()
    {
-        PlayerPrefs.SetInt(starKey, starCount);
+        PlayerPrefs.SetInt(starKey, CurrentStarCount + 1);
    }
 
     public void UpdateMaxDashCount()
@@ -88,5 +93,14 @@ public class GameManager : MonoBehaviour
     {
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         playerScript.SpringJumpTrigger(springTime, hangTime);
+    }
+
+    // debug
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log(PlayerPrefs.GetInt(starKey));
+        }
     }
 }
