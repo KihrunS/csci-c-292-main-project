@@ -37,8 +37,8 @@ public class Spring : MonoBehaviour
         {
             if (active)
             {
-                gameManager.SpringJump();
                 active = false;
+                gameManager.SpringJump();
                 spriteRenderer.sprite = down;
                 tempY = transform.position.y;
                 transform.position = new Vector3(transform.position.x, -1.675f, transform.position.z);
