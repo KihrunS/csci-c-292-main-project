@@ -40,7 +40,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private bool canMove;
     [SerializeField] private bool canJump;
     [SerializeField] private int dashCount;
-    [SerializeField] private bool isDashing;
+    [SerializeField] public bool isDashing;
     private bool groundedDashJump;
     [SerializeField] private bool gravityOn;
     [SerializeField] private bool isWallJumping;
@@ -300,6 +300,15 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         velocity.y = 2 * 3.009f / 0.34f;
     }
 
+    public void Knockback()
+    {
+        StopCoroutine("Dash");
+        StopCoroutine("GroundedDash");
+        gravityOn = true;
+        canMove = canJump = isDashing = false;
+        StartCoroutine("KnockbackCo");
+    }
+
     // Coroutines
 
     IEnumerator AttemptJump()
@@ -387,6 +396,14 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         yield return new WaitForSeconds(timeToJumpApex * 1.01f);
         canMove = true;
         isWallJumping = false;
+    }
+
+    IEnumerator KnockbackCo()
+    {
+        velocity.x = -1 * dirFacing * moveSpeed;
+        velocity.y = jumpForce/2;
+        yield return new WaitForSeconds(.25f);
+        canMove = canJump = true;
     }
 
     // Access methods

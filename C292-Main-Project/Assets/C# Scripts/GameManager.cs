@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
         playerScript.SetDashCount(MaxDashCount);
     }
 
-    public Boolean CanRefresh()
+    public bool CanRefresh()
     {
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         if (playerScript.GetDashCount() < MaxDashCount)
@@ -93,6 +93,18 @@ public class GameManager : MonoBehaviour
     {
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         playerScript.SpringJump();
+    }
+
+    public bool BlockBreak()
+    {
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        if (playerScript.isDashing)
+        {
+            playerScript.Knockback();
+            return true;
+        }
+        return false;
+
     }
 
     // debug

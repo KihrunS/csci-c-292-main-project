@@ -2,13 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 
 public class Spring : MonoBehaviour
 {
     GameManager gameManager;
-    new BoxCollider2D collider;
     SpriteRenderer spriteRenderer;
 
     [SerializeField] private float cooldown;
@@ -22,7 +20,6 @@ public class Spring : MonoBehaviour
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        collider = GetComponent<BoxCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
