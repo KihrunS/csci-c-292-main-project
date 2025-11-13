@@ -295,7 +295,9 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
     public void SpringJump()
     {
+        StopCoroutine("Dash");
         isGrounded = false;
+        gravityOn = canMove = true;
         dashCount = maxDashCount;
         velocity.y = 2 * 3.009f / 0.34f;
     }
