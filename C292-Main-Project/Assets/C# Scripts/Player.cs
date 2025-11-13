@@ -196,7 +196,14 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         prevVelocity = velocity;
         if (gravityOn)
         {
-            velocity.y += gravity * Time.fixedDeltaTime;
+            if (isWallJumping)
+            {
+                velocity.y += -2 * 2.5f / Mathf.Pow(.3f, 2) * Time.fixedDeltaTime;
+            }
+            else
+            {
+                velocity.y += gravity * Time.fixedDeltaTime;
+            }
         }
 
         if (!isDashing && velocity.y < -fallSpeedMax)
@@ -328,9 +335,9 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             gravityOn = true;
             canMove = false;
             isWallJumping = true;
-
-            velocity.x = -wallDirX * moveSpeed;
-            velocity.y = jumpForce;
+                
+            velocity.x = -wallDirX * 8.33f;
+            velocity.y = 16.67f;
 
             StartCoroutine("WallJump");
         }
@@ -395,7 +402,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
     IEnumerator WallJump()
     {
-        yield return new WaitForSeconds(timeToJumpApex * 1.01f);
+        yield return new WaitForSeconds(.3f);
         canMove = true;
         isWallJumping = false;
     }
