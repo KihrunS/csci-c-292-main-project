@@ -25,6 +25,14 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        if (FindObjectOfType<GameManager>() == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        DontDestroyOnLoad(gameObject);
+
         if (SceneManager.GetActiveScene().buildIndex == 0)
         {
             PlayerPrefs.DeleteAll();
@@ -105,6 +113,11 @@ public class GameManager : MonoBehaviour
         }
         return false;
 
+    }
+
+    public void NextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     // debug
