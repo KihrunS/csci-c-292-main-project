@@ -17607,7 +17607,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9109912498568147868, guid: 26a4b21d24bd98443a5b40f820216667, type: 3}
       propertyPath: m_Name
-      value: BreakableBlock (Buggy)
+      value: BreakableBlock
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
