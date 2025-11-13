@@ -21,15 +21,13 @@ public class BreakableBlock : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Colliding!");
             if (gameManager.BlockBreak())
             {
-                Debug.Log("Breaking!");
-                Destroy(this.gameObject);
+                Destroy(transform.parent.gameObject);
                 GameObject.Instantiate(starPrefab, transform.position, Quaternion.identity);
             }
         }
