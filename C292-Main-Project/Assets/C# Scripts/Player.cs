@@ -427,6 +427,11 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         dashCount = setDashCount;
     }
 
+    public float GetYVelocity()
+    {
+        return velocity.y;
+    }
+
     /* debug
     IEnumerator DebugTimer()
     {

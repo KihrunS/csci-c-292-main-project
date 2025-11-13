@@ -38,7 +38,7 @@ public class Spring : MonoBehaviour
                 gameManager.SpringJump();
                 spriteRenderer.sprite = down;
                 tempY = transform.position.y;
-                transform.position = new Vector3(transform.position.x, -1.675f, transform.position.z);
+                transform.position = new Vector3(transform.position.x, tempY - .18f, transform.position.z);
                 StartCoroutine("Cooldown");
             }
         }
