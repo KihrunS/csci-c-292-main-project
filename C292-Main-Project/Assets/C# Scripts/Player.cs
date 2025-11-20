@@ -211,7 +211,52 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             velocity.y = -fallSpeedMax;
         }
 
-        Vector3 deltaPosition = (prevVelocity + velocity) * 0.5f * Time.fixedDeltaTime;
+        if (transform.position.x <= -7.625) // Treats out of bounds like a wall without letting them walljump
+        {
+            Debug.Log("Out of bounds!");
+            velocity.x = Mathf.Clamp(velocity.x, 0f, int.MaxValue);
+            prevVelocity.x = Mathf.Clamp(prevVelocity.x, 0f, int.MaxValue);
+            coyoteJump = false;
+
+            if (isDashing && !(velocity.y == dashSpeed || velocity.y == (-1 * dashSpeed)))
+            {
+                StopCoroutine("Dash");
+                StopCoroutine("GroundedDash");
+                isDashing = groundedDashJump = false;
+                canMove = canJump = gravityOn = true;
+            }
+
+            if (isWallJumping)
+            {
+                StopCoroutine("WallJump");
+                isWallJumping = false;
+                canMove = true;
+            }
+        }
+        else if (transform.position.x >= 7.625)
+        {
+            Debug.Log("Out of bounds!");
+            velocity.x = Mathf.Clamp(velocity.x, int.MinValue, 0f);
+            prevVelocity.x = Mathf.Clamp(prevVelocity.x, int.MinValue, 0f);
+            coyoteJump = false;
+
+            if (isDashing && !(velocity.y == dashSpeed || velocity.y == (-1 * dashSpeed)))
+            {
+                StopCoroutine("Dash");
+                StopCoroutine("GroundedDash");
+                isDashing = groundedDashJump = false;
+                canMove = canJump = gravityOn = true;
+            }
+
+            if (isWallJumping)
+            {
+                StopCoroutine("WallJump");
+                isWallJumping = false;
+                canMove = true;
+            }
+        }
+
+            Vector3 deltaPosition = (prevVelocity + velocity) * 0.5f * Time.fixedDeltaTime;
         controller.Move(deltaPosition);
         
         if (velocity.x != 0)
