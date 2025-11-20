@@ -8,14 +8,6 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] public float respawnTime;
 
-    string starKey = "StarCount";
-    string dashKey = "MaxDashCount";
-
-    public int CurrentStarCount { get; set; }
-    public int MaxDashCount { get; set; }
-
-
-
     [SerializeField] private GameObject playerPrefab;
     private GameObject spawnPosition;
     private GameObject playerInstance;
@@ -23,6 +15,8 @@ public class GameManager : MonoBehaviour
 
     private bool dead = false;
     private bool levelComplete = false;
+    public int starCount;
+    public int maxDashCount;
 
     private void Awake()
     {
@@ -34,6 +28,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        maxDashCount = 1;
         InitializeScene();
         DontDestroyOnLoad(gameObject);
     }
@@ -42,25 +37,25 @@ public class GameManager : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().buildIndex == 1)
         {
-            PlayerPrefs.DeleteAll();
+            starCount = 0;
+            maxDashCount = 1;
         }
 
         spawnPosition = GameObject.FindGameObjectWithTag("SpawnPosition");
-        CurrentStarCount = PlayerPrefs.GetInt(starKey);
-        MaxDashCount = PlayerPrefs.GetInt(dashKey) + 1;
-
         Invoke("SpawnPlayer", 0.1f);
         levelComplete = false;
     }
 
     public void IncrementStarCount()
    {
-        PlayerPrefs.SetInt(starKey, CurrentStarCount + 1);
-   }
+        starCount++;
+    }
 
     public void UpdateMaxDashCount()
     {
-        PlayerPrefs.SetInt(dashKey, MaxDashCount + 1);
+        maxDashCount = 2;
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        playerScript.UpdateDashCount();
     }
 
     private void SpawnPlayer()
@@ -88,13 +83,13 @@ public class GameManager : MonoBehaviour
 
     public void DashRefresh()
     {
-        playerScript.SetDashCount(MaxDashCount);
+        playerScript.SetDashCount(maxDashCount);
     }
 
     public bool CanRefresh()
     {
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        if (playerScript.GetDashCount() < MaxDashCount)
+        if (playerScript.GetDashCount() < maxDashCount)
         {
             return true;
         }
@@ -160,7 +155,7 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Debug.Log(PlayerPrefs.GetInt(starKey));
+            Debug.Log(starCount);
         }
     }
 }

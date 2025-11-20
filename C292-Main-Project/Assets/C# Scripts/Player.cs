@@ -76,7 +76,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         horizontalDashDuration = dashDistance / dashSpeed;
         verticalDashDuration = horizontalDashDuration / 2;
         diagonalDashDuration = horizontalDashDuration * 0.75f;
-        maxDashCount = gameManager.MaxDashCount;
+        maxDashCount = gameManager.maxDashCount;
         canMove = true;
         canJump = true;
         dashCount = maxDashCount;
@@ -305,7 +305,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             }
         }
 
-        if (dashCount <= 0 && !groundedDashJump)
+        if (dashCount < maxDashCount && !groundedDashJump)
         {
             if (controller.collisions.below) 
             { 
@@ -475,6 +475,11 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     public float GetYVelocity()
     {
         return velocity.y;
+    }
+
+    public void UpdateDashCount()
+    {
+        maxDashCount = gameManager.maxDashCount;
     }
 
     /* debug
