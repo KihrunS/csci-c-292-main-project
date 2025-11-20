@@ -7,6 +7,8 @@ public class Hurtbox : MonoBehaviour
 {
     GameManager gameManager;
 
+    [SerializeField] string direction;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +23,7 @@ public class Hurtbox : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && gameManager.SpikeDirection("up"))
+        if (collision.gameObject.CompareTag("Player") && gameManager.SpikeDirection(direction))
         {
             gameManager.KillPlayer();
         }

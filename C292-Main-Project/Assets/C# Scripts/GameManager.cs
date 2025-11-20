@@ -137,9 +137,31 @@ public class GameManager : MonoBehaviour
                 return false;
             }
         }
-        else
+        else if (dir == "down")
         {
             if (playerScript.GetYVelocity() >= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if (dir == "right")
+        {
+            if (playerScript.GetXVelocity() <= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (playerScript.GetXVelocity() >= 0)
             {
                 return true;
             }

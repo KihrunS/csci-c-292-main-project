@@ -143,4 +143,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1530a6e1988aa2640b1cafa2c8515f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 5732110329051119476, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
+  direction: up

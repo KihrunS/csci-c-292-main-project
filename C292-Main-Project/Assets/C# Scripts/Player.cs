@@ -32,7 +32,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     GameManager gameManager;
     [SerializeField] private float jumpForce;
     private float gravity;
-    private int maxDashCount;
+    [SerializeField] private int maxDashCount;
 
     // Variables updated during gameplay
     private Vector3 velocity;
@@ -475,6 +475,11 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     public float GetYVelocity()
     {
         return velocity.y;
+    }
+
+    public float GetXVelocity()
+    {
+        return velocity.x;
     }
 
     public void UpdateDashCount()
