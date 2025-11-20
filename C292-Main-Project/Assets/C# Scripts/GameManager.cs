@@ -22,17 +22,24 @@ public class GameManager : MonoBehaviour
     private Player playerScript;
 
     private bool dead = false;
+    private bool levelComplete = false;
 
     private void Awake()
     {
-        if (FindObjectOfType<GameManager>() == null)
+        GameManager[] list = FindObjectsOfType<GameManager>(); // Singleton pattern, destroys new game manager if one exists and calls the initialization method in the existing game manager
+        if (list.Length > 1)
         {
+            list[0].InitializeScene();
             Destroy(gameObject);
             return;
         }
 
+        InitializeScene();
         DontDestroyOnLoad(gameObject);
+    }
 
+    public void InitializeScene()
+    {
         if (SceneManager.GetActiveScene().buildIndex == 1)
         {
             PlayerPrefs.DeleteAll();
@@ -41,12 +48,9 @@ public class GameManager : MonoBehaviour
         spawnPosition = GameObject.FindGameObjectWithTag("SpawnPosition");
         CurrentStarCount = PlayerPrefs.GetInt(starKey);
         MaxDashCount = PlayerPrefs.GetInt(dashKey) + 1;
-        
-    }
 
-    private void Start()
-    {
         Invoke("SpawnPlayer", 0.1f);
+        levelComplete = false;
     }
 
     public void IncrementStarCount()
@@ -117,7 +121,11 @@ public class GameManager : MonoBehaviour
 
     public void NextLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        if (!levelComplete) // Prevents the player from hitting 2 triggers at once
+        {
+            levelComplete = true;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
     }
 
     public bool SpikeDirection(string dir)
