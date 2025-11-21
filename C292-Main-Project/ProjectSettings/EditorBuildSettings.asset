@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
@@ -23,4 +23,25 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Room 5.unity
     guid: f946f54d17321274a9c5880d07c4d735
+  - enabled: 1
+    path: Assets/Scenes/DD Room 1.unity
+    guid: 26f08818abc49f845bd310a2d5a0b55e
+  - enabled: 1
+    path: Assets/Scenes/DD Room 2.unity
+    guid: f297db4789b477c41adf2ed2ee5765af
+  - enabled: 1
+    path: Assets/Scenes/DD Room 3.unity
+    guid: c7758dbc4ff78324d9b1f7ea530d9f69
+  - enabled: 1
+    path: Assets/Scenes/DD Room 4.unity
+    guid: 0815ad098ac15d247858cc17844aa870
+  - enabled: 1
+    path: Assets/Scenes/DD Room 5.unity
+    guid: 85bbdeb9b6d78344fa6d989d55d0c9a8
+  - enabled: 1
+    path: Assets/Scenes/DD Room 6.unity
+    guid: c7361ae947cf70e4c83a816db7bfd634
+  - enabled: 1
+    path: Assets/Scenes/End Room.unity
+    guid: b072f53f73171374ca81268d520fa6aa
   m_configObjects: {}

@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
 
     public void InitializeScene()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 1)
+        if (SceneManager.GetActiveScene().buildIndex == 0)
         {
             starCount = 0;
             maxDashCount = 1;
