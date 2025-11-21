@@ -53,6 +53,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private bool isGrounded;
     [SerializeField] private int dirFacing;
     [SerializeField] private bool wallSliding;
+    private bool lockPlayer;
 
     /* Debug variables
     [SerializeField] private float timer = 0;
@@ -88,6 +89,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         timeToCoyoteEnd = 0;
         isGrounded = true;
         dirFacing = 1;
+        lockPlayer = false;
     }
 
     // Input dependent variables should be checked here because Update is called more
@@ -267,7 +269,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         if (controller.collisions.below)
         {
                 velocity.y = 0;
-            if (isDashing && !groundedDashJump)
+            if (isDashing && !groundedDashJump && !lockPlayer)
             {
                 StopCoroutine("Dash");
                 StopCoroutine("GroundedDash");
@@ -289,7 +291,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             velocity.x = 0;
             coyoteJump = false;
 
-            if (isDashing && !(velocity.y == dashSpeed || velocity.y == (-1 * dashSpeed)))
+            if (isDashing && !(velocity.y == dashSpeed || velocity.y == (-1 * dashSpeed)) && !lockPlayer)
             {
                 StopCoroutine("Dash");
                 StopCoroutine("GroundedDash");
@@ -297,7 +299,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
                 canMove = canJump = gravityOn = true;
             }
 
-            if (isWallJumping)
+            if (isWallJumping && !lockPlayer)
             {
                 StopCoroutine("WallJump");
                 isWallJumping = false;
@@ -485,6 +487,18 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     public void UpdateDashCount()
     {
         maxDashCount = gameManager.maxDashCount;
+    }
+
+    public void EndGame()
+    {
+        StopCoroutine("AttemptJump");
+        StopCoroutine("JumpAttemptTimer");
+        StopCoroutine("Dash");
+        StopCoroutine("GroundedDash");
+        StopCoroutine("WallJump");
+        lockPlayer = gravityOn = true;
+        velocity.x = dashCount = maxDashCount = 0;
+        canMove = canJump = false;
     }
 
     /* debug

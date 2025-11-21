@@ -172,6 +172,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void EndGame()
+    {
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        playerScript.EndGame();
+    }
+
     // debug
     private void Update()
     {
