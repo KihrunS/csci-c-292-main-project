@@ -32,7 +32,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     GameManager gameManager;
     [SerializeField] private float jumpForce;
     private float gravity;
-    [SerializeField] private int maxDashCount;
+    private int maxDashCount;
 
     // Variables updated during gameplay
     private Vector3 velocity;

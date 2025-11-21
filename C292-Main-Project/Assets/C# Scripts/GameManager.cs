@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     private bool dead = false;
     private bool levelComplete = false;
     public int starCount;
-    public int maxDashCount;
+    [SerializeField] public int maxDashCount;
 
     private void Awake()
     {
