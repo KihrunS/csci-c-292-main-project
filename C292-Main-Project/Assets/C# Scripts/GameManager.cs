@@ -15,8 +15,10 @@ public class GameManager : MonoBehaviour
     private GameObject spawnPosition;
     private GameObject playerInstance;
     private Player playerScript;
-    [SerializeField] private TextMeshProUGUI timerText;
-    [SerializeField] private RectTransform timerBackground;
+    private TextMeshProUGUI timerText;
+    private RectTransform timerBackground;
+    private TextMeshProUGUI distanceText;
+    private RectTransform distanceBackground;
 
     private bool dead = false;
     private bool levelComplete = false;
@@ -27,7 +29,8 @@ public class GameManager : MonoBehaviour
     private string hours;
     private string minutes;
     private string seconds;
-    private int room = 0;
+    private int room;
+    private int distance;
 
     private void Awake()
     {
@@ -40,6 +43,8 @@ public class GameManager : MonoBehaviour
         }
 
         maxDashCount = 1;
+        room = 0;
+        distance = 100;
         InitializeScene();
         DontDestroyOnLoad(gameObject);
     }
@@ -86,6 +91,8 @@ public class GameManager : MonoBehaviour
         {
             timerText = GameObject.FindGameObjectWithTag("Timer").GetComponent<TextMeshProUGUI>();
             timerBackground = timerText.rectTransform.parent.GetComponent<RectTransform>();
+            distanceText = GameObject.FindGameObjectWithTag("Distance").GetComponent<TextMeshProUGUI>();
+            distanceBackground = distanceText.rectTransform.parent.GetComponent<RectTransform>();
             spawnPosition = GameObject.FindGameObjectWithTag("SpawnPosition");
             Invoke("SpawnPlayer", 0.1f);
             StartCoroutine("ShowUI");
@@ -125,11 +132,25 @@ public class GameManager : MonoBehaviour
         dead = false;
     }
 
-    private IEnumerator ShowUI() // shows timer, waits, hides timer
+    private IEnumerator ShowUI() // shows timer and distance, waits, hides them
     {
+        string roomDistance;
+
+        if (SceneManager.GetActiveScene().name == "End Room") // Displays different text for certain rooms
+        {
+            roomDistance = "Summit";
+        }
+        else
+        {
+            roomDistance = distance.ToString() + " M";
+        }
+
         timerBackground.gameObject.SetActive(true);
+        distanceText.text = roomDistance;
+        distanceBackground.gameObject.SetActive(true);
         yield return new WaitForSeconds(uiTimer);
         timerBackground.gameObject.SetActive(false);
+        distanceBackground.gameObject.SetActive(false);
     }
 
     public void KillPlayer()
@@ -182,6 +203,7 @@ public class GameManager : MonoBehaviour
         {
             levelComplete = true;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            distance += 100;
         }
     }
 
