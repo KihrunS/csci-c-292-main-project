@@ -259,7 +259,9 @@ MonoBehaviour:
   maxJumpHeight: 2.5
   timeToJumpApex: 0.38
   dashDistance: 4
+  diagonalDashDistance: 6
   dashSpeed: 9
+  diagonalDashSpeed: 12
   horizontalDashDuration: 0
   verticalDashDuration: 0
   diagonalDashDuration: 0

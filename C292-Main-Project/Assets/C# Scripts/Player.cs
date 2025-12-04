@@ -15,7 +15,9 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private float maxJumpHeight;
     [SerializeField] private float timeToJumpApex;
     [SerializeField] private float dashDistance;
+    [SerializeField] private float diagonalDashDistance; // Just pulled a lucky value honestly
     [SerializeField] private float dashSpeed;
+    [SerializeField] private float diagonalDashSpeed; // Found out this is different
     [SerializeField] private float horizontalDashDuration;
     [SerializeField] private float verticalDashDuration;
     [SerializeField] private float diagonalDashDuration;
@@ -76,7 +78,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
         horizontalDashDuration = dashDistance / dashSpeed;
         verticalDashDuration = horizontalDashDuration / 2;
-        diagonalDashDuration = horizontalDashDuration * 0.75f;
+        diagonalDashDuration = diagonalDashDistance / diagonalDashSpeed;
         maxDashCount = gameManager.maxDashCount;
         canMove = true;
         canJump = true;
@@ -125,9 +127,17 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             {
                 input.x = dirFacing;
             }
-            velocity = new Vector3(input.x, input.y, 0).normalized * dashSpeed;
 
-            StartCoroutine("Dash"); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
+            if (input.x != 0 && input.y != 0) // checks for diagonal dash (two inputs)
+            {
+                velocity = new Vector3(input.x, input.y, 0).normalized * diagonalDashSpeed;
+            }
+            else
+            {
+                velocity = new Vector3(input.x, input.y, 0).normalized * dashSpeed;
+            }
+
+                StartCoroutine("Dash"); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
             // Learned more proper Coroutine syntax from https://discussions.unity.com/t/coroutine-keep-working-after-stopcoroutine-call/257280
         }
 
@@ -420,20 +430,15 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         else
         {
             yield return new WaitForSeconds(diagonalDashDuration/2);
-            
+            gravityOn = true;
+
             if (!controller.collisions.above)
             {
                 yield return new WaitForSeconds(diagonalDashDuration / 2);
             }
 
-            float tempXVelocity = velocity.x;
-            canMove = canJump = gravityOn = true;
-            while (velocity.y > 0.5)
-            {
-                velocity.x = tempXVelocity;
-                yield return null;
-            }
-
+            yield return new WaitForSeconds(horizontalDashDuration - diagonalDashDuration);
+            canJump = canMove = true;
         }
 
         isDashing = groundedDashJump = false;
