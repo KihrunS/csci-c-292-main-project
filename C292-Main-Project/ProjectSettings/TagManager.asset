@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Kill
   - SpawnPosition
+  - Timer
   layers:
   - Default
   - TransparentFX

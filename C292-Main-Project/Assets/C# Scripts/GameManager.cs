@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,11 +13,17 @@ public class GameManager : MonoBehaviour
     private GameObject spawnPosition;
     private GameObject playerInstance;
     private Player playerScript;
+    [SerializeField] private TextMeshProUGUI timerText;
 
     private bool dead = false;
     private bool levelComplete = false;
     public int starCount;
     [SerializeField] public int maxDashCount;
+    [SerializeField] private double timeSinceStart;
+    [SerializeField] private bool timerActive = false;
+    private string hours;
+    private string minutes;
+    private string seconds;
 
     private void Awake()
     {
@@ -33,14 +40,45 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Update()
+    {
+        if (timerActive) // So timer can be disabled at the end or when pausing, if added
+        {
+            timeSinceStart += Time.deltaTime;
+            hours = (((int)timeSinceStart / 3600).ToString().Length == 1) ? "0" + ((int)timeSinceStart / 3600).ToString() : ((int)timeSinceStart / 3600).ToString(); // each of these check for 1 digit, and adds a 0 in front if yes
+            minutes = (((int)timeSinceStart / 60 % 60).ToString().Length == 1) ? "0" + ((int)timeSinceStart / 60 % 60).ToString() : ((int)timeSinceStart / 60 % 60).ToString();
+            seconds = (((int)timeSinceStart % 60).ToString().Length == 1) ? "0" + ((int)timeSinceStart % 60).ToString() : ((int)timeSinceStart % 60).ToString();
+
+
+            if (timerText != null) // failsafe in case if update runs before the timer game object is found
+            {
+                timerText.text = hours + " : " + minutes + " : " + seconds;
+            }
+        }
+
+        if (timeSinceStart >= 359999f)
+        {
+            timerActive = false;
+        }
+
+        // debug
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log(starCount);
+        }
+    }
+
     public void InitializeScene()
     {
         if (SceneManager.GetActiveScene().buildIndex == 0)
         {
             starCount = 0;
             maxDashCount = 1;
+            timeSinceStart = 0;
+            timerActive = true; // sets timer to 0 and starts it upon loading the first level
         }
 
+        timerText = GameObject.FindGameObjectWithTag("Timer").GetComponent<TextMeshProUGUI>();
         spawnPosition = GameObject.FindGameObjectWithTag("SpawnPosition");
         Invoke("SpawnPlayer", 0.1f);
         levelComplete = false;
@@ -176,14 +214,5 @@ public class GameManager : MonoBehaviour
     {
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         playerScript.EndGame();
-    }
-
-    // debug
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Debug.Log(starCount);
-        }
     }
 }
