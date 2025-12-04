@@ -17015,6 +17015,8 @@ MonoBehaviour:
   timerText: {fileID: 0}
   starCount: 0
   maxDashCount: 0
+  timeSinceStart: 0
+  timerActive: 0
 --- !u!4 &540006481
 Transform:
   m_ObjectHideFlags: 0
@@ -20583,7 +20585,7 @@ GameObject:
   - component: {fileID: 1752467826}
   - component: {fileID: 1752467825}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Timer Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
