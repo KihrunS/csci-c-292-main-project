@@ -17011,8 +17011,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   respawnTime: 1
+  uiTimer: 1.25
   playerPrefab: {fileID: 5732110329051119476, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
   timerText: {fileID: 0}
+  timerBackground: {fileID: 0}
   starCount: 0
   maxDashCount: 0
   timeSinceStart: 0

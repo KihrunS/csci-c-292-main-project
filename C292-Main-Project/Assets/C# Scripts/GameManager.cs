@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] public float respawnTime;
+    [SerializeField] private float uiTimer;
 
     [SerializeField] private GameObject playerPrefab;
     private GameObject spawnPosition;
     private GameObject playerInstance;
     private Player playerScript;
     [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private RectTransform timerBackground;
 
     private bool dead = false;
     private bool levelComplete = false;
@@ -24,6 +27,7 @@ public class GameManager : MonoBehaviour
     private string hours;
     private string minutes;
     private string seconds;
+    private int room = 0;
 
     private void Awake()
     {
@@ -70,18 +74,31 @@ public class GameManager : MonoBehaviour
 
     public void InitializeScene()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 0)
+        if (SceneManager.GetActiveScene().buildIndex == 1 && room != 1)
         {
             starCount = 0;
             maxDashCount = 1;
             timeSinceStart = 0;
-            timerActive = true; // sets timer to 0 and starts it upon loading the first level
+            timerActive = true; // sets timer to 0 and starts it upon loading the first level for the first time
         }
 
-        timerText = GameObject.FindGameObjectWithTag("Timer").GetComponent<TextMeshProUGUI>();
-        spawnPosition = GameObject.FindGameObjectWithTag("SpawnPosition");
-        Invoke("SpawnPlayer", 0.1f);
-        levelComplete = false;
+        if (SceneManager.GetActiveScene().buildIndex != room) // only runs on first time entering this room
+        {
+            timerText = GameObject.FindGameObjectWithTag("Timer").GetComponent<TextMeshProUGUI>();
+            timerBackground = timerText.rectTransform.parent.GetComponent<RectTransform>();
+            spawnPosition = GameObject.FindGameObjectWithTag("SpawnPosition");
+            Invoke("SpawnPlayer", 0.1f);
+            StartCoroutine("ShowUI");
+            levelComplete = false;
+            room = SceneManager.GetActiveScene().buildIndex;
+        }
+        else // runs on respawn
+        {
+            SpawnPlayer();
+            StartCoroutine("ShowUI");
+
+        }
+        
     }
 
     public void IncrementStarCount()
@@ -104,8 +121,15 @@ public class GameManager : MonoBehaviour
     private IEnumerator Respawn()
     {
         yield return new WaitForSeconds(respawnTime);
-        Instantiate(playerPrefab, spawnPosition.transform.position, Quaternion.identity);
+        InitializeScene();
         dead = false;
+    }
+
+    private IEnumerator ShowUI() // shows timer, waits, hides timer
+    {
+        timerBackground.gameObject.SetActive(true);
+        yield return new WaitForSeconds(uiTimer);
+        timerBackground.gameObject.SetActive(false);
     }
 
     public void KillPlayer()
