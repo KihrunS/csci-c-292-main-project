@@ -525,10 +525,15 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     IEnumerator GroundedDash()
     {
         isGroundedDashing = true;
-        yield return new WaitForSeconds(horizontalDashDuration/4);
-        canJump = gravityOn = groundedDashJump = true;
-        yield return new WaitForSeconds(horizontalDashDuration/4);
-        dashCount = maxDashCount;
+        yield return new WaitForSeconds(horizontalDashDuration/8);
+        gravityOn = groundedDashJump = true;
+        yield return new WaitForSeconds(0.1f);
+        if (controller.collisions.below)
+        {
+            dashCount = maxDashCount;
+        }
+        yield return new WaitForSeconds(horizontalDashDuration/8 - 0.1f);
+        canJump  = true;
     }
 
     IEnumerator WallJump()
@@ -538,8 +543,12 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         isWallJumping = false;
     }
 
-    IEnumerator KnockbackCo()
+    IEnumerator KnockbackCo() // updated to stop dash coroutines and fix player state
     {
+        StopCoroutine("Dash");
+        StopCoroutine("GroundedDash");
+        isDashing = groundedDashJump = isGroundedDashing = false;
+        gravityOn = true;
         velocity.x = -1 * dirFacing * moveSpeed;
         velocity.y = jumpForce/2;
         yield return new WaitForSeconds(.25f);
