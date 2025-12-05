@@ -522,12 +522,12 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         isDashing = groundedDashJump = false;
     }
 
-    IEnumerator GroundedDash()
+    IEnumerator GroundedDash() // Now refreshes dash before allowing player to jump
     {
         isGroundedDashing = true;
         yield return new WaitForSeconds(horizontalDashDuration/8);
         gravityOn = groundedDashJump = true;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.1f); // Waits to ensure gravity has taken effect
         if (controller.collisions.below)
         {
             dashCount = maxDashCount;
