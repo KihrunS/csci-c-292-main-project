@@ -28,13 +28,22 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private float coyoteTime;
     [SerializeField] private float fallSpeedMax;
 
+    // Sprites
+    [SerializeField] private Sprite rightSprite;
+    [SerializeField] private Sprite leftSprite;
+    [SerializeField] private Sprite rightAirSprite;
+    [SerializeField] private Sprite leftAirSprite;
+    [SerializeField] private Sprite rightWallSprite;
+    [SerializeField] private Sprite leftWallSprite;
+
     // Variables set/calculated on start only
     Controller2D controller;
-    SpriteRenderer sprite;
+    SpriteRenderer spriteRenderer;
     GameManager gameManager;
     [SerializeField] private float jumpForce;
     private float gravity;
     private int maxDashCount;
+    private Vector3 defaultScale;
 
     // Variables updated during gameplay
     private Vector3 velocity;
@@ -68,7 +77,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     {
         controller = GetComponent<Controller2D>();
 
-        sprite = GetComponentInChildren<SpriteRenderer>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         gameManager = FindObjectOfType<GameManager>();
 
@@ -92,6 +101,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         isGrounded = true;
         dirFacing = 1;
         lockPlayer = false;
+        defaultScale = transform.localScale;
     }
 
     // Input dependent variables should be checked here because Update is called more
@@ -349,6 +359,18 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             isGrounded = true;
             coyoteJump = false;
             timeToCoyoteEnd = 0;
+        }
+
+        if (dirFacing == 1) // Flips player in the direction they're facing
+        {
+            transform.localScale = defaultScale;
+        }
+
+        if (dirFacing == -1)
+        {
+            Vector3 tempScale = defaultScale;
+            tempScale.x *= dirFacing;
+            transform.localScale = tempScale;
         }
     }
 
