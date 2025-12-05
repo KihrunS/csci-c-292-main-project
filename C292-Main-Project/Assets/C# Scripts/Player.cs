@@ -30,8 +30,14 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
     // Sprites
     [SerializeField] private Sprite groundedSprite;
+    [SerializeField] private Sprite groundedBlueSprite;
+    [SerializeField] private Sprite groundedGreenSprite;
     [SerializeField] private Sprite airSprite;
+    [SerializeField] private Sprite airBlueSprite;
+    [SerializeField] private Sprite airGreenSprite;
     [SerializeField] private Sprite wallSprite;
+    [SerializeField] private Sprite wallBlueSprite;
+    [SerializeField] private Sprite wallGreenSprite;
 
     // Variables set/calculated on start only
     Controller2D controller;
@@ -162,18 +168,55 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             transform.localScale = tempScale;
         }
 
-        if ((controller.collisions.right || controller.collisions.left) && !controller.collisions.below)
+        switch (dashCount) // Checks dash count, sets corresponding sprite color
         {
-            spriteRenderer.sprite = wallSprite;
+            case 0:
+                if ((controller.collisions.right || controller.collisions.left) && !controller.collisions.below)
+                {
+                    spriteRenderer.sprite = wallBlueSprite;
+                }
+                else if (!controller.collisions.below && !isGroundedDashing)
+                {
+                    spriteRenderer.sprite = airBlueSprite;
+                }
+                else
+                {
+                    spriteRenderer.sprite = groundedBlueSprite;
+                }
+                break;
+
+            case 2:
+                if ((controller.collisions.right || controller.collisions.left) && !controller.collisions.below)
+                {
+                    spriteRenderer.sprite = wallGreenSprite;
+                }
+                else if (!controller.collisions.below && !isGroundedDashing)
+                {
+                    spriteRenderer.sprite = airGreenSprite;
+                }
+                else
+                {
+                    spriteRenderer.sprite = groundedGreenSprite;
+                }
+                break;
+
+            default:
+                if ((controller.collisions.right || controller.collisions.left) && !controller.collisions.below)
+                {
+                    spriteRenderer.sprite = wallSprite;
+                }
+                else if (!controller.collisions.below && !isGroundedDashing)
+                {
+                    spriteRenderer.sprite = airSprite;
+                }
+                else
+                {
+                    spriteRenderer.sprite = groundedSprite;
+                }
+                break;
+
         }
-        else if (!controller.collisions.below && !isGroundedDashing)
-        {
-            spriteRenderer.sprite = airSprite;
-        }
-        else
-        {
-            spriteRenderer.sprite = groundedSprite;
-        }
+
 
         /* debug
         if (!timerStart && !controller.collisions.left && !controller.collisions.right)

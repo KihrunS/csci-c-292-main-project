@@ -194,8 +194,14 @@ MonoBehaviour:
   coyoteTime: 0.1
   fallSpeedMax: 12
   groundedSprite: {fileID: 21300000, guid: c0ac7ababc27d9b42ac8dfa5d0da7712, type: 3}
+  groundedBlueSprite: {fileID: 21300000, guid: c3abccce6e6b58545b3250ee439a459a, type: 3}
+  groundedGreenSprite: {fileID: 21300000, guid: 170f83f3a696c7046988491d411161a5, type: 3}
   airSprite: {fileID: 21300000, guid: 7b83aade3b299f54581ac9c42ab5656a, type: 3}
+  airBlueSprite: {fileID: 21300000, guid: 73b4ac1abc7674046b5c95010ac7a0d2, type: 3}
+  airGreenSprite: {fileID: 21300000, guid: acc32b3dacf0eea4194627906bd61afe, type: 3}
   wallSprite: {fileID: 21300000, guid: e79fd04bae3d9114396b803d96b2299a, type: 3}
+  wallBlueSprite: {fileID: 21300000, guid: c9402acde0d0b55439b4c722c47ffd53, type: 3}
+  wallGreenSprite: {fileID: 21300000, guid: c52a223c894a0f842a74a869c167716a, type: 3}
   jumpForce: 0
   canMove: 0
   canJump: 0
