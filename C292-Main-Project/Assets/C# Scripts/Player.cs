@@ -29,12 +29,9 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private float fallSpeedMax;
 
     // Sprites
-    [SerializeField] private Sprite rightSprite;
-    [SerializeField] private Sprite leftSprite;
-    [SerializeField] private Sprite rightAirSprite;
-    [SerializeField] private Sprite leftAirSprite;
-    [SerializeField] private Sprite rightWallSprite;
-    [SerializeField] private Sprite leftWallSprite;
+    [SerializeField] private Sprite groundedSprite;
+    [SerializeField] private Sprite airSprite;
+    [SerializeField] private Sprite wallSprite;
 
     // Variables set/calculated on start only
     Controller2D controller;
@@ -65,6 +62,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private int dirFacing;
     [SerializeField] private bool wallSliding;
     private bool lockPlayer;
+    [SerializeField] private bool isGroundedDashing;
 
     /* Debug variables
     [SerializeField] private float timer = 0;
@@ -102,6 +100,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         dirFacing = 1;
         lockPlayer = false;
         defaultScale = transform.localScale;
+        isGroundedDashing = false;
     }
 
     // Input dependent variables should be checked here because Update is called more
@@ -130,7 +129,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             StopCoroutine("Dash");
             StopCoroutine("WallJump"); // Allows you to interrupt walljump by dashing
 
-            canJump = canMove = gravityOn = isWallJumping = false;
+            canJump = canMove = gravityOn = isWallJumping = isGroundedDashing = false;
             dashCount -= 1;
 
             if (input.x == 0 && input.y == 0) // This makes sure you dash in the direction you're facing if you don't input anything while pressing dash
@@ -149,6 +148,31 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
                 StartCoroutine("Dash"); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
             // Learned more proper Coroutine syntax from https://discussions.unity.com/t/coroutine-keep-working-after-stopcoroutine-call/257280
+        }
+
+        if (dirFacing == 1) // Flips player in the direction they're facing
+        {
+            transform.localScale = defaultScale;
+        }
+
+        if (dirFacing == -1)
+        {
+            Vector3 tempScale = defaultScale;
+            tempScale.x *= dirFacing;
+            transform.localScale = tempScale;
+        }
+
+        if ((controller.collisions.right || controller.collisions.left) && !controller.collisions.below)
+        {
+            spriteRenderer.sprite = wallSprite;
+        }
+        else if (!controller.collisions.below && !isGroundedDashing)
+        {
+            spriteRenderer.sprite = airSprite;
+        }
+        else
+        {
+            spriteRenderer.sprite = groundedSprite;
         }
 
         /* debug
@@ -244,7 +268,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             {
                 StopCoroutine("Dash");
                 StopCoroutine("GroundedDash");
-                isDashing = groundedDashJump = false;
+                isDashing = groundedDashJump = isGroundedDashing = false;
                 canMove = canJump = gravityOn = true;
             }
 
@@ -266,7 +290,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             {
                 StopCoroutine("Dash");
                 StopCoroutine("GroundedDash");
-                isDashing = groundedDashJump = false;
+                isDashing = groundedDashJump = isGroundedDashing = false;
                 canMove = canJump = gravityOn = true;
             }
 
@@ -293,7 +317,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             {
                 StopCoroutine("Dash");
                 StopCoroutine("GroundedDash");
-                isDashing = groundedDashJump = false;
+                isDashing = groundedDashJump = isGroundedDashing = false;
                 canMove = canJump = gravityOn = true;
             }
         }
@@ -315,7 +339,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             {
                 StopCoroutine("Dash");
                 StopCoroutine("GroundedDash");
-                isDashing = groundedDashJump = false;
+                isDashing = groundedDashJump = isGroundedDashing = false;
                 canMove = canJump = gravityOn = true;
             }
 
@@ -360,18 +384,6 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             coyoteJump = false;
             timeToCoyoteEnd = 0;
         }
-
-        if (dirFacing == 1) // Flips player in the direction they're facing
-        {
-            transform.localScale = defaultScale;
-        }
-
-        if (dirFacing == -1)
-        {
-            Vector3 tempScale = defaultScale;
-            tempScale.x *= dirFacing;
-            transform.localScale = tempScale;
-        }
     }
 
     private void Restart()
@@ -382,7 +394,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     public void SpringJump()
     {
         StopCoroutine("Dash");
-        isGrounded = false;
+        isGrounded = isGroundedDashing = isDashing = false;
         gravityOn = canMove = true;
         dashCount = maxDashCount;
         velocity.y = 2 * 3.009f / 0.34f;
@@ -393,7 +405,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         StopCoroutine("Dash");
         StopCoroutine("GroundedDash");
         gravityOn = true;
-        canMove = canJump = isDashing = false;
+        canMove = canJump = isDashing = isGroundedDashing = false;
         StartCoroutine("KnockbackCo");
     }
 
@@ -448,6 +460,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             gravityOn = true;
             yield return new WaitForSeconds(horizontalDashDuration/2);
             canJump = canMove = true;
+            isGroundedDashing = false;
         }
         else
         {
@@ -468,6 +481,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
     IEnumerator GroundedDash()
     {
+        isGroundedDashing = true;
         yield return new WaitForSeconds(horizontalDashDuration/4);
         canJump = gravityOn = groundedDashJump = true;
         yield return new WaitForSeconds(horizontalDashDuration/4);
@@ -525,7 +539,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         StopCoroutine("WallJump");
         lockPlayer = gravityOn = true;
         velocity.x = dashCount = maxDashCount = 0;
-        canMove = canJump = false;
+        canMove = canJump = isGroundedDashing = false;
     }
 
     /* debug
