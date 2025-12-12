@@ -93,7 +93,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
         gameManager = FindObjectOfType<GameManager>();
 
-        audioSource = FindObjectOfType<AudioSource>();
+        audioSource = GameObject.Find("Sounds").GetComponent<AudioSource>();
 
         gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
 

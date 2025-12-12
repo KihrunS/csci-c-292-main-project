@@ -11,6 +11,8 @@ TagManager:
   - EndUI
   - StarsText
   - EndTimerText
+  - Music
+  - Sound
   layers:
   - Default
   - TransparentFX

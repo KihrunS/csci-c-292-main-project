@@ -16333,6 +16333,9 @@ MonoBehaviour:
   starGrabSound: {fileID: 8300000, guid: 4c58c3e42d674014bb836df092c3bac5, type: 3}
   blockBreakSound: {fileID: 8300000, guid: 863ce176545a3e742810d58de2b5b0ca, type: 3}
   springSound: {fileID: 8300000, guid: 8ae38b27ffbd9fe478ee37f52815fde9, type: 3}
+  dashRefreshSound: {fileID: 0}
+  dashUpgradeSound: {fileID: 0}
+  winSound: {fileID: 0}
   playerPrefab: {fileID: 5732110329051119476, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
   starCount: 0
   maxDashCount: 0
@@ -20053,8 +20056,8 @@ GameObject:
   - component: {fileID: 1410385608}
   - component: {fileID: 1410385607}
   m_Layer: 0
-  m_Name: Audio
-  m_TagString: Untagged
+  m_Name: Sounds
+  m_TagString: Sound
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -23,7 +23,7 @@ public class DisappearingBlock : MonoBehaviour
         collider = transform.parent.GetComponent<BoxCollider2D>();
         spriteRenderer = transform.parent.GetComponent<SpriteRenderer>();
         disappearing = false;
-        audioSource = FindObjectOfType<AudioSource>();
+        audioSource = GameObject.Find("Sounds").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame

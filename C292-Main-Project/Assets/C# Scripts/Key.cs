@@ -15,7 +15,7 @@ public class Key : MonoBehaviour
     void Start()
     {
         spriteRenderer = transform.parent.GetComponent<SpriteRenderer>();
-        audioSource = FindObjectOfType<AudioSource>();
+        audioSource = GameObject.Find("Sounds").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame

@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
             maxDashCount = 1;
             timeSinceStart = 0;
             timerActive = true; // sets timer to 0 and starts it upon loading the first level for the first time
-            audioSource = FindObjectOfType<AudioSource>();
+            audioSource = GameObject.Find("Sounds").GetComponent<AudioSource>();
         }
 
         if (SceneManager.GetActiveScene().buildIndex != room) // only runs on first time entering this room
