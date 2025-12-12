@@ -39,10 +39,18 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
     [SerializeField] private Sprite wallBlueSprite;
     [SerializeField] private Sprite wallGreenSprite;
 
+    // Audio
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip dashSound;
+    [SerializeField] private AudioClip refreshSound;
+    [SerializeField] private AudioClip outOfDashSound;
+
+
     // Variables set/calculated on start only
     Controller2D controller;
     SpriteRenderer spriteRenderer;
     GameManager gameManager;
+    AudioSource audioSource;
     [SerializeField] private float jumpForce;
     private float gravity;
     private int maxDashCount;
@@ -84,6 +92,8 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         gameManager = FindObjectOfType<GameManager>();
+
+        audioSource = FindObjectOfType<AudioSource>();
 
         gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
 
@@ -154,6 +164,13 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
 
                 StartCoroutine("Dash"); // Learned how to use Coroutines from ChatGPT: https://chatgpt.com/share/68fabe04-1c64-8002-bfe6-50316ef5527d 
             // Learned more proper Coroutine syntax from https://discussions.unity.com/t/coroutine-keep-working-after-stopcoroutine-call/257280
+
+            audioSource.PlayOneShot(dashSound, 2f);
+
+            if (dashCount == 0)
+            {
+                audioSource.PlayOneShot(outOfDashSound, .5f);
+            }
         }
 
         if (dirFacing == 1) // Flips player in the direction they're facing
@@ -399,6 +416,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             if (controller.collisions.below) 
             { 
                 dashCount = maxDashCount;
+                audioSource.PlayOneShot(refreshSound, .5f);
             }
         }
 
@@ -463,6 +481,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             velocity.y = jumpForce;
             coyoteJump = false;
             isGrounded = false;
+            audioSource.PlayOneShot(jumpSound);
         }
         else if (wallSliding)
         {
@@ -474,6 +493,8 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
             velocity.y = 16.67f;
 
             StartCoroutine("WallJump");
+
+            audioSource.PlayOneShot(jumpSound);
         }
     }
 
@@ -531,6 +552,7 @@ public class Player : MonoBehaviour // Many parts of this class comes from the s
         if (controller.collisions.below)
         {
             dashCount = maxDashCount;
+            audioSource.PlayOneShot(refreshSound, .5f);
         }
         yield return new WaitForSeconds(horizontalDashDuration/8 - 0.1f);
         canJump  = true;

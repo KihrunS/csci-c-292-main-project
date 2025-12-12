@@ -12,6 +12,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] public float respawnTime;
     [SerializeField] private float uiTimer;
 
+    private AudioSource audioSource;
+
+    [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip respawnSound;
+    [SerializeField] private AudioClip starGrabSound;
+    [SerializeField] private AudioClip blockBreakSound;
+    [SerializeField] private AudioClip springSound;
+    [SerializeField] private AudioClip dashRefreshSound;
+    [SerializeField] private AudioClip dashUpgradeSound;
+    [SerializeField] private AudioClip winSound;
+
     [SerializeField] private GameObject playerPrefab;
     private GameObject spawnPosition;
     private GameObject playerInstance;
@@ -86,6 +97,7 @@ public class GameManager : MonoBehaviour
             maxDashCount = 1;
             timeSinceStart = 0;
             timerActive = true; // sets timer to 0 and starts it upon loading the first level for the first time
+            audioSource = FindObjectOfType<AudioSource>();
         }
 
         if (SceneManager.GetActiveScene().buildIndex != room) // only runs on first time entering this room
@@ -104,14 +116,14 @@ public class GameManager : MonoBehaviour
         {
             SpawnPlayer();
             StartCoroutine("ShowUI");
-
+            audioSource.PlayOneShot(respawnSound, .25f);
         }
-        
     }
 
     public void IncrementStarCount()
    {
         starCount++;
+        audioSource.PlayOneShot(starGrabSound, .5f);
     }
 
     public void UpdateMaxDashCount()
@@ -119,11 +131,13 @@ public class GameManager : MonoBehaviour
         maxDashCount = 2;
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         playerScript.UpdateDashCount();
+        audioSource.PlayOneShot(dashUpgradeSound);
     }
 
     private void SpawnPlayer()
     {
         Instantiate(playerPrefab, spawnPosition.transform.position, Quaternion.identity);
+        audioSource.PlayOneShot(respawnSound, .25f);
     }
 
     private IEnumerator Respawn()
@@ -162,12 +176,14 @@ public class GameManager : MonoBehaviour
             playerInstance = GameObject.FindGameObjectWithTag("Player");
             Destroy(playerInstance);
             StartCoroutine("Respawn");
+            audioSource.PlayOneShot(deathSound);
         }
     }
 
     public void DashRefresh()
     {
         playerScript.SetDashCount(maxDashCount);
+        audioSource.PlayOneShot(dashRefreshSound, .5f);
     }
 
     public bool CanRefresh()
@@ -184,6 +200,7 @@ public class GameManager : MonoBehaviour
     {
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         playerScript.SpringJump();
+        audioSource.PlayOneShot(springSound);
     }
 
     public bool BlockBreak()
@@ -192,6 +209,7 @@ public class GameManager : MonoBehaviour
         if (playerScript.isDashing)
         {
             playerScript.Knockback();
+            audioSource.PlayOneShot(blockBreakSound, .5f);
             return true;
         }
         return false;
@@ -272,5 +290,6 @@ public class GameManager : MonoBehaviour
         endTimerText.enabled = true;
         UnityEngine.UI.Image endStarIcon = GameObject.Find("Star Icon").GetComponent<UnityEngine.UI.Image>();
         endStarIcon.enabled = true;
+        audioSource.PlayOneShot(winSound);
     }
 }

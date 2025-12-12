@@ -6,9 +6,13 @@ public class DisappearingBlock : MonoBehaviour
 {
     new BoxCollider2D collider;
     SpriteRenderer spriteRenderer;
+    AudioSource audioSource;
 
     [SerializeField] float disappearTime;
     [SerializeField] float respawnTime;
+
+    [SerializeField] AudioClip disappearingSound;
+    [SerializeField] AudioClip respawningSound;
 
 
     bool disappearing;
@@ -19,6 +23,7 @@ public class DisappearingBlock : MonoBehaviour
         collider = transform.parent.GetComponent<BoxCollider2D>();
         spriteRenderer = transform.parent.GetComponent<SpriteRenderer>();
         disappearing = false;
+        audioSource = FindObjectOfType<AudioSource>();
     }
 
     // Update is called once per frame
@@ -41,11 +46,13 @@ public class DisappearingBlock : MonoBehaviour
 
     IEnumerator Disappear()
     {
+        audioSource.PlayOneShot(disappearingSound, .1f);
         yield return new WaitForSeconds(disappearTime);
         spriteRenderer.enabled = collider.enabled = false;
         yield return new WaitForSeconds (respawnTime);
         spriteRenderer.enabled = collider.enabled = true;
         disappearing = false;
+        audioSource.PlayOneShot(respawningSound, .1f);
 
     }
 }

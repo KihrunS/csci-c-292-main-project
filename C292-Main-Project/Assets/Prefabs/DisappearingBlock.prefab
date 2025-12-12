@@ -276,3 +276,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disappearTime: 0.6
   respawnTime: 1.9
+  disappearingSound: {fileID: 8300000, guid: ea6a5716f4f1b4e4a804b11e613dbd08, type: 3}
+  respawningSound: {fileID: 8300000, guid: 13dc6ab739bebf140a4d1ac9a0e3e0f5, type: 3}

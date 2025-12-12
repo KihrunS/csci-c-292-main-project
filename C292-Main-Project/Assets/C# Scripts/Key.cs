@@ -6,13 +6,16 @@ public class Key : MonoBehaviour
 {
 
     SpriteRenderer spriteRenderer;
+    AudioSource audioSource;
 
     [SerializeField] GameObject starPrefab;
+    [SerializeField] AudioClip keyGrabSound;
 
     // Start is called before the first frame update
     void Start()
     {
         spriteRenderer = transform.parent.GetComponent<SpriteRenderer>();
+        audioSource = FindObjectOfType<AudioSource>();
     }
 
     // Update is called once per frame
@@ -25,6 +28,7 @@ public class Key : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            audioSource.PlayOneShot(keyGrabSound, .25f);
             GameObject.Instantiate(starPrefab, transform.parent.position, Quaternion.identity);
             spriteRenderer.enabled = false;
             Destroy(this.gameObject);
