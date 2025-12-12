@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
@@ -29,7 +30,7 @@ public class GameManager : MonoBehaviour
     private string hours;
     private string minutes;
     private string seconds;
-    private int room;
+    [SerializeField] private int room;
     private int distance;
 
     private void Awake()
@@ -260,5 +261,16 @@ public class GameManager : MonoBehaviour
     {
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         playerScript.EndGame();
+        timerActive = false;
+        UnityEngine.UI.Image endUIBackground = GameObject.Find("Completion Background").GetComponent<UnityEngine.UI.Image>();
+        endUIBackground.enabled = true;
+        TextMeshProUGUI starsText = GameObject.Find("Stars Collected").GetComponent<TextMeshProUGUI>();
+        starsText.text = "x" + starCount.ToString();
+        starsText.enabled = true;
+        TextMeshProUGUI endTimerText = GameObject.Find("Completion Time").GetComponent<TextMeshProUGUI>(); 
+        endTimerText.text = hours + " : " + minutes + " : " + seconds;
+        endTimerText.enabled = true;
+        UnityEngine.UI.Image endStarIcon = GameObject.Find("Star Icon").GetComponent<UnityEngine.UI.Image>();
+        endStarIcon.enabled = true;
     }
 }

@@ -17254,12 +17254,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   respawnTime: 1
-  uiTimer: 0
+  uiTimer: 1.25
   playerPrefab: {fileID: 5732110329051119476, guid: da260e27f785c184cbd5fbb8dcfb8406, type: 3}
   starCount: 0
   maxDashCount: 0
   timeSinceStart: 0
   timerActive: 0
+  room: 0
 --- !u!4 &540006481
 Transform:
   m_ObjectHideFlags: 0

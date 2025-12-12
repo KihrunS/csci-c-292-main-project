@@ -8,6 +8,9 @@ TagManager:
   - SpawnPosition
   - Timer
   - Distance
+  - EndUI
+  - StarsText
+  - EndTimerText
   layers:
   - Default
   - TransparentFX
